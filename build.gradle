@@ -134,7 +134,7 @@ repositories
 
 }
 
-task fatCapsule(type: FatCapsule) {
+task xwingapp(type: FatCapsule) {
 	applicationClass 'xwing.main.XWingMain'
 	baseName "xwingapp_${getDate()}.jar"
 	reallyExecutable
