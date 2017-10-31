@@ -21,6 +21,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'launch4j'
 apply plugin: 'javafx-gradle-plugin'
 apply plugin: 'application'
@@ -65,7 +66,8 @@ def getVersionName = {
 }
 
 sourceCompatibility = 1.8
-version = getVersionName()
+group = 'net.clearcontrol'
+version = "1.0.6" //getVersionName()
 
 test
 {
@@ -90,7 +92,7 @@ dependencies
 
   // ClearControl:
   compile ('net.clearcontrol:clearcontrol:[0.9.0,0.10.0[')                 {transitive= true; changing= true}
-  compile ('net.clearcontrol:clearcontrol-lightsheet:[1.0.9,1.1.0[')      {transitive= true; changing= true}
+  compile ('net.clearcontrol:clearcontrol-lightsheet:1.10.3-EDF')      {transitive= true; changing= true}
 
 	compile group: 'junit', name: 'junit', version: '4.+'
 	testCompile group: 'junit', name: 'junit', version: '4.+'
@@ -134,6 +136,17 @@ repositories
 
 }
 
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn:javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 task xwingapp(type: FatCapsule) {
 	applicationClass 'xwing.main.XWingMain'
 	baseName "xwingapp_${getDate()}.jar"
@@ -144,6 +157,22 @@ launch4j {
 	mainClassName = "xwing.main.XWingMain"
 	jar = 'xwingapp${getDate()}.jar'
 }
+
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar { classifier "sources" }
+        }
+    }
+}
+
 
 
 //***********************************************************************************
