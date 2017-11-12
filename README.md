@@ -16,5 +16,7 @@ Afterwards, you will find an XWing.exe in this sub directory:
 
 build\jfx\native\XWing
 
-
-
+Go to this folder and fix the following (temporary) issues:
+* Delete CoreMem-0.4.3.jar
+* Delete ClearCL-0.5.2.jar
+* Copy over the "kernels" folders from fastfuse/registration and fastfuse/tasks to app/kernels
