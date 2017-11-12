@@ -148,9 +148,9 @@ public class XWingMain extends Application implements LoggingFeature
    * @param pPrimaryStage
    *          JFX primary stage
    * @param p2DDisplay
-   *          true-> use 2D displays
+   *          true: use 2D displays
    * @param p3DDisplay
-   *          true -> use 3D displays
+   *          true: use 3D displays
    */
   public void startXWing(int pNumberOfDetectionArms,
                          int pNumberOfLightSheets,
