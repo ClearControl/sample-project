@@ -161,6 +161,8 @@ public class XWingMain extends Application implements LoggingFeature
   {
     int lMaxStackProcessingQueueLength = 32;
     int lThreadPoolSize = 1;
+    int lNumberOfControlPlanes = 12;
+
 
     try (
         ClearCL lClearCL =
@@ -214,7 +216,7 @@ public class XWingMain extends Application implements LoggingFeature
         lXWingMicroscope.addRealHardwareDevices(pNumberOfDetectionArms,
                                                 pNumberOfLightSheets);
       }
-      lXWingMicroscope.addStandardDevices();
+      lXWingMicroscope.addStandardDevices(lNumberOfControlPlanes);
 
 
       DepthOfFocusImagingEngine
