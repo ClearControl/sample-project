@@ -11,7 +11,7 @@ import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.extendeddepthfield.DepthOfFocusImagingEngine;
+import clearcontrol.microscope.lightsheet.extendeddepthoffocus.EDFImagingEngine;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulationUtils;
 import javafx.application.Application;
@@ -161,7 +161,7 @@ public class XWingMain extends Application implements LoggingFeature
   {
     int lMaxStackProcessingQueueLength = 32;
     int lThreadPoolSize = 1;
-    int lNumberOfControlPlanes = 12;
+    int lNumberOfControlPlanes = 7;
 
 
     try (
@@ -219,8 +219,8 @@ public class XWingMain extends Application implements LoggingFeature
       lXWingMicroscope.addStandardDevices(lNumberOfControlPlanes);
 
 
-      DepthOfFocusImagingEngine
-          lDepthOfFocusImagingEngine = new DepthOfFocusImagingEngine(lXWingMicroscope);
+      EDFImagingEngine
+          lDepthOfFocusImagingEngine = new EDFImagingEngine(lStackFusionContext, lXWingMicroscope);
       lXWingMicroscope.addDevice(0, lDepthOfFocusImagingEngine);
 
 
