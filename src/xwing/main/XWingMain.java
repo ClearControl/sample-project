@@ -10,6 +10,8 @@ import clearcl.backend.ClearCLBackends;
 import clearcontrol.core.concurrent.thread.ThreadSleep;
 import clearcontrol.core.configuration.MachineConfiguration;
 import clearcontrol.core.log.LoggingFeature;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.extendeddepthoffocus.EDFImagingEngine;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulationUtils;
 import javafx.application.Application;
@@ -33,6 +35,24 @@ import xwing.gui.XWingGui;
  */
 public class XWingMain extends Application implements LoggingFeature
 {
+  static XWingMain instance = null;
+
+
+
+  public static XWingMain getInstance()
+  {
+    if (instance == null) {
+      launch();
+    }
+    return instance;
+  }
+
+  private LightSheetMicroscope mLightSheetMicroscope;
+
+  public LightSheetMicroscope getLightSheetMicroscope()
+  {
+    return mLightSheetMicroscope;
+  }
 
   private static Alert sAlert;
   private static Optional<ButtonType> sResult;
@@ -48,6 +68,7 @@ public class XWingMain extends Application implements LoggingFeature
   @Override
   public void start(Stage pPrimaryStage)
   {
+    instance = this;
     boolean l2DDisplay = true;
     boolean l3DDisplay = true;
 
@@ -127,9 +148,9 @@ public class XWingMain extends Application implements LoggingFeature
    * @param pPrimaryStage
    *          JFX primary stage
    * @param p2DDisplay
-   *          true-> use 2D displays
+   *          true: use 2D displays
    * @param p3DDisplay
-   *          true -> use 3D displays
+   *          true: use 3D displays
    */
   public void startXWing(int pNumberOfDetectionArms,
                          int pNumberOfLightSheets,
@@ -140,6 +161,8 @@ public class XWingMain extends Application implements LoggingFeature
   {
     int lMaxStackProcessingQueueLength = 32;
     int lThreadPoolSize = 1;
+    int lNumberOfControlPlanes = 7;
+
 
     try (
         ClearCL lClearCL =
@@ -161,7 +184,7 @@ public class XWingMain extends Application implements LoggingFeature
                                        new XWingMicroscope(lStackFusionContext,
                                                            lMaxStackProcessingQueueLength,
                                                            lThreadPoolSize);
-
+      mLightSheetMicroscope = lXWingMicroscope;
       if (pSimulation)
       {
         ClearCLContext lSimulationContext = lClearCL
@@ -193,7 +216,14 @@ public class XWingMain extends Application implements LoggingFeature
         lXWingMicroscope.addRealHardwareDevices(pNumberOfDetectionArms,
                                                 pNumberOfLightSheets);
       }
-      lXWingMicroscope.addStandardDevices();
+      lXWingMicroscope.addStandardDevices(lNumberOfControlPlanes);
+
+
+      EDFImagingEngine
+          lDepthOfFocusImagingEngine = new EDFImagingEngine(lStackFusionContext, lXWingMicroscope);
+      lXWingMicroscope.addDevice(0, lDepthOfFocusImagingEngine);
+
+
 
       XWingGui lXWingGui;
 
