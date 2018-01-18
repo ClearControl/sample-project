@@ -1,8 +1,11 @@
 package xwing.gui;
 
+import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import javafx.stage.Stage;
+import clearcontrol.devices.stages.kcube.KCubeDevice;
+import clearcontrol.devices.stages.kcube.gui.KCubePanel;
 
 /**
  * XWing microscope GUI
@@ -35,6 +38,9 @@ public class XWingGui extends LightSheetMicroscopeGUI
           p3DDisplay);
     addGroovyScripting("lsm");
     addJythonScripting("lsm");
+
+    addPanelMappingEntry(KCubeDevice.class, KCubePanel.class,
+                         MicroscopeNodeType.Stage);
   }
 
 }

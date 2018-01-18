@@ -15,7 +15,9 @@ import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
+import clearcontrol.devices.stages.kcube.KCubeDeviceFactory;
 
 /**
  * XWing microscope
@@ -58,6 +60,20 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
   {
     long lDefaultStackWidth = 1024;
     long lDefaultStackHeight = 2048;
+
+
+    {
+      KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
+      addDevice(0, lKCubeDeviceFactory);
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000278, "X")); // XWing stage X-axis
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000298, "Y")); // XWing stage Y-axis
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000299, "Z")); // XWing stage Z-axis
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "I0B")); // XWing LS0 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "I1B")); // XWing LS1 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000317, "I2B")); // XWing LS2 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
+    }
+
 
     // Setting up lasers:
     {
@@ -187,6 +203,25 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, lLightSheetOpticalSwitch);
     }
 
+    {
+      //addDevice(0, new TSTStageDevice());
+    }
+  }
+
+  @Override
+  public void addSimulatedDevices(boolean pDummySimulation,
+                                  boolean pXYZRStage,
+                                  boolean pSharedLightSheetControl,
+                                  LightSheetMicroscopeSimulationDevice pSimulatorDevice)
+  {
+    super.addSimulatedDevices(pDummySimulation, pXYZRStage, pSharedLightSheetControl, pSimulatorDevice);
+
+
+    {
+      KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
+      addDevice(0, lKCubeDeviceFactory);
+      //addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
+    }
   }
 
 }
