@@ -1,10 +1,16 @@
-package clearcontrol.devices.stages.kcube;
+package clearcontrol.devices.stages.kcube.impl;
 
 import aptj.APTJDevice;
 import aptj.APTJExeption;
+import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.device.task.TaskDevice;
 import clearcontrol.core.log.LoggingFeature;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.devices.stages.BasicStageInterface;
+import clearcontrol.devices.stages.StageDeviceInterface;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -12,10 +18,17 @@ import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG
  * (http://mpi-cbg.de) December 2017
  */
-public class KCubeDevice extends TaskDevice
+public class KCubeDevice extends VirtualDevice
                             implements VisualConsoleInterface,
-                                       LoggingFeature
+                                       LoggingFeature,
+                                       BasicStageInterface
 {
+  protected long mPollPeriodWhileWaiting = 100;
+  protected long mTimeoutWhileWaiting = 1000;
+  protected TimeUnit mTimeUnit = TimeUnit.MILLISECONDS;
+
+  private Variable<Double> mPositionVariable = new Variable<Double>("position", 0.0 );
+
   long mSerialId;
   APTJDevice mKCubeAPTJDevice = null;
 
@@ -30,7 +43,14 @@ public class KCubeDevice extends TaskDevice
     super(pName + " (Thorlabs K-cube, " + pKCubeDevice.getSerialNumber() + ") test");
     mKCubeAPTJDevice = pKCubeDevice;
     mSerialId = mKCubeAPTJDevice.getSerialNumber();
-
+    try
+    {
+      mPositionVariable.set(mKCubeAPTJDevice.getCurrentPosition());
+    }
+    catch (APTJExeption aptjExeption)
+    {
+      aptjExeption.printStackTrace();
+    }
 
     //System.out.println("APTLibrary.APTInit();");
     //APTLibrary.
@@ -48,12 +68,6 @@ public class KCubeDevice extends TaskDevice
     {
       aptjExeption.printStackTrace();
     }*/
-  }
-
-  @Override
-  public void run()
-  {
-
   }
 
   public double getMinPosition() {
@@ -82,38 +96,48 @@ public class KCubeDevice extends TaskDevice
     return Double.NaN;
   }
 
-  public void moveBy(double pStep) {
+  public boolean moveBy(double pStep, boolean pWaitToFinish) {
     double lNewPosition = getCurrentPosition() + pStep;
     if (lNewPosition > getMaxPosition() || lNewPosition < getMinPosition()) {
       warning("The KCube controlled motor " + mSerialId + " cannot be moved to position " + lNewPosition + ", it would be out of [" + getMinPosition() + ", " + getMaxPosition() + "]");
-      return;
+      return false;
     }
 
 
     info("Moving KCube " + mSerialId + " by " + pStep);
-    try
-    {
-      mKCubeAPTJDevice.moveBy(pStep);
-    }
-    catch (APTJExeption aptjExeption)
-    {
-      aptjExeption.printStackTrace();
-    }
+
+    return moveTo(pStep, pWaitToFinish);
   }
 
+  @Override public Variable<Double> getPositionVariable()
+  {
+    return mPositionVariable;
+  }
 
+  public boolean moveTo(double pPosition)
+  {
+    return moveTo(pPosition, false);
+  }
 
-  public void moveTo(double pPosition) {
+  public boolean moveTo(double pPosition, boolean pWaitToFinish) {
     info("Moving KCube " + mSerialId + " to " + pPosition);
     try
     {
       mKCubeAPTJDevice.moveBy(pPosition);
+      if (pWaitToFinish)
+      {
+        mKCubeAPTJDevice.waitWhileMoving(mPollPeriodWhileWaiting,
+                                         mTimeoutWhileWaiting,
+                                         mTimeUnit);
+        mPositionVariable.set(mKCubeAPTJDevice.getCurrentPosition());
+      }
+      return true;
     }
     catch (APTJExeption aptjExeption)
     {
       aptjExeption.printStackTrace();
-
     }
+    return false;
   }
 
 

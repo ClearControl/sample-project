@@ -11,13 +11,16 @@ import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
 import clearcontrol.devices.stages.hub.StageHubDevice;
+import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
+import clearcontrol.devices.stages.kcube.impl.KCubeThreeAxesStageDevice;
+import clearcontrol.devices.stages.kcube.sim.SimulatedThreeAxesStageDevice;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
-import clearcontrol.devices.stages.kcube.KCubeDeviceFactory;
+import clearcontrol.devices.stages.kcube.impl.KCubeDeviceFactory;
 
 /**
  * XWing microscope
@@ -65,14 +68,22 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
     {
       KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
       addDevice(0, lKCubeDeviceFactory);
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000278, "X")); // XWing stage X-axis
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000298, "Y")); // XWing stage Y-axis
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000299, "Z")); // XWing stage Z-axis
+      KCubeDevice lXStage = lKCubeDeviceFactory.createKCubeDevice(26000278, "X"); // XWing stage X-axis
+      KCubeDevice lYStage = lKCubeDeviceFactory.createKCubeDevice(26000298, "Y"); // XWing stage Y-axis
+      KCubeDevice lZStage = lKCubeDeviceFactory.createKCubeDevice(26000299, "Z"); // XWing stage Z-axis
+      addDevice(0, lXStage);
+      addDevice(0, lYStage);
+      addDevice(0, lZStage);
+      addDevice(0, new KCubeThreeAxesStageDevice("Stage", lXStage, lYStage, lZStage));
+
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "I0B")); // XWing LS0 beta angle
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "I1B")); // XWing LS1 beta angle
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000317, "I2B")); // XWing LS2 beta angle
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
+
+
     }
+
 
 
     // Setting up lasers:
@@ -221,6 +232,8 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
       addDevice(0, lKCubeDeviceFactory);
       //addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
+
+      addDevice(0, new SimulatedThreeAxesStageDevice());
     }
   }
 

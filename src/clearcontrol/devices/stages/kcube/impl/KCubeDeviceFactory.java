@@ -1,4 +1,4 @@
-package clearcontrol.devices.stages.kcube;
+package clearcontrol.devices.stages.kcube.impl;
 
 import aptj.APTJDeviceFactory;
 import aptj.APTJDeviceType;
