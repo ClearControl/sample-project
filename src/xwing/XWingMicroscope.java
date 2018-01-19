@@ -229,8 +229,8 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
 
 
     {
-      KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
-      addDevice(0, lKCubeDeviceFactory);
+      //KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
+      //addDevice(0, lKCubeDeviceFactory);
       //addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
 
       addDevice(0, new SimulatedThreeAxesStageDevice());
