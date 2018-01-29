@@ -59,12 +59,12 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
    *          number of lightsheets
    */
   public void addRealHardwareDevices(int pNumberOfDetectionArms,
-                                     int pNumberOfLightSheets)
+                                     int pNumberOfLightSheets, boolean pUseStages)
   {
     long lDefaultStackWidth = 1024;
     long lDefaultStackHeight = 2048;
 
-
+    if (pUseStages)
     {
       KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
       addDevice(0, lKCubeDeviceFactory);

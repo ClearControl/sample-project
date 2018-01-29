@@ -89,6 +89,7 @@ public class XWingMain extends Application implements LoggingFeature
     pPrimaryStage.show();
 
     ButtonType lButtonReal = new ButtonType("Real");
+    ButtonType lButtonRealWithOutStages = new ButtonType("Real (without stages)");
     ButtonType lButtonSimulation = new ButtonType("Simulation");
     ButtonType lButtonCancel = new ButtonType("Cancel");
 
@@ -99,6 +100,7 @@ public class XWingMain extends Application implements LoggingFeature
     sAlert.setContentText("Choose whether you want to start in real or simulation mode");
 
     sAlert.getButtonTypes().setAll(lButtonReal,
+                                   lButtonRealWithOutStages,
                                    lButtonSimulation,
                                    lButtonCancel);
 
@@ -112,7 +114,8 @@ public class XWingMain extends Application implements LoggingFeature
                      true,
                      pPrimaryStage,
                      l2DDisplay,
-                     l3DDisplay);
+                     l3DDisplay,
+                     false);
         }
         else if (sResult.get() == lButtonReal)
         {
@@ -121,7 +124,17 @@ public class XWingMain extends Application implements LoggingFeature
                      false,
                      pPrimaryStage,
                      l2DDisplay,
-                     l3DDisplay);
+                     l3DDisplay,
+                     true);
+        } else if (sResult.get() == lButtonRealWithOutStages)
+        {
+          startXWing(2,
+                     4,
+                     false,
+                     pPrimaryStage,
+                     l2DDisplay,
+                     l3DDisplay,
+                     false);
         }
         else if (sResult.get() == lButtonCancel)
         {
@@ -157,7 +170,8 @@ public class XWingMain extends Application implements LoggingFeature
                          boolean pSimulation,
                          Stage pPrimaryStage,
                          boolean p2DDisplay,
-                         boolean p3DDisplay)
+                         boolean p3DDisplay,
+                         boolean pUseStages)
   {
     int lMaxStackProcessingQueueLength = 32;
     int lThreadPoolSize = 1;
@@ -214,7 +228,7 @@ public class XWingMain extends Application implements LoggingFeature
       else
       {
         lXWingMicroscope.addRealHardwareDevices(pNumberOfDetectionArms,
-                                                pNumberOfLightSheets);
+                                                pNumberOfLightSheets, pUseStages);
       }
       lXWingMicroscope.addStandardDevices(lNumberOfControlPlanes);
 
