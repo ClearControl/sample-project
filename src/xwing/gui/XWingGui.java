@@ -8,7 +8,8 @@ import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import javafx.stage.Stage;
 import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
 import clearcontrol.devices.stages.kcube.gui.KCubePane;
-
+import xwing.adaptive.AdaptiveZScheduler;
+import xwing.adaptive.gui.AdaptiveZSchedulerPanel;
 
 /**
  * XWing microscope GUI
@@ -49,6 +50,11 @@ public class XWingGui extends LightSheetMicroscopeGUI
     addPanelMappingEntry(BasicThreeAxisStageInterface.class,
                          BasicThreeAxesStagePanel.class,
                          MicroscopeNodeType.Stage);
+
+    addPanelMappingEntry(AdaptiveZScheduler.class,
+                         AdaptiveZSchedulerPanel.class,
+                         MicroscopeNodeType.AdaptiveOptics);
+
   }
 
 }

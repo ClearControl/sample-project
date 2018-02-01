@@ -21,6 +21,8 @@ import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDev
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import clearcontrol.devices.stages.kcube.impl.KCubeDeviceFactory;
+import xwing.adaptive.AdaptiveZScheduler;
+import xwing.multicolor.MultiChannelScheduler;
 
 /**
  * XWing microscope
@@ -82,6 +84,17 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
 
 
+    }
+
+    // setup adaptators
+    {
+      AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
+      addDevice(0, lAdaptiveZScheduler);
+    }
+
+    {
+      MultiChannelScheduler lMultiChannelScheduler = new MultiChannelScheduler();
+      addDevice(0, lMultiChannelScheduler);
     }
 
 
@@ -235,6 +248,13 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
 
       addDevice(0, new SimulatedThreeAxesStageDevice());
     }
+
+    // setup adaptators
+    {
+      AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
+      addDevice(0, lAdaptiveZScheduler);
+    }
+
   }
 
 }
