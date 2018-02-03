@@ -22,7 +22,12 @@ import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulat
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import clearcontrol.devices.stages.kcube.impl.KCubeDeviceFactory;
 import xwing.adaptive.AdaptiveZScheduler;
+import xwing.copilot.CopilotDevice;
+import xwing.copilot.gui.steps.StepFactoryInterface;
+import xwing.copilot.gui.steps.step1manualcalibration.Step1ManualCalibrationFactory;
 import xwing.multicolor.MultiChannelScheduler;
+
+import java.util.ArrayList;
 
 /**
  * XWing microscope
@@ -50,6 +55,14 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
           pStackFusionContext,
           pMaxStackProcessingQueueLength,
           pThreadPoolSize);
+
+    // initialize copilot
+    {
+      ArrayList<StepFactoryInterface> lCopilotStepList = new ArrayList<StepFactoryInterface>();
+      lCopilotStepList.add(new Step1ManualCalibrationFactory());
+
+      addDevice(0, new CopilotDevice(this, lCopilotStepList));
+    }
   }
 
   /**

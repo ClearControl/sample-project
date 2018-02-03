@@ -10,6 +10,8 @@ import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
 import clearcontrol.devices.stages.kcube.gui.KCubePane;
 import xwing.adaptive.AdaptiveZScheduler;
 import xwing.adaptive.gui.AdaptiveZSchedulerPanel;
+import xwing.copilot.CopilotDevice;
+import xwing.copilot.gui.CopilotDevicePanel;
 
 /**
  * XWing microscope GUI
@@ -54,6 +56,8 @@ public class XWingGui extends LightSheetMicroscopeGUI
     addPanelMappingEntry(AdaptiveZScheduler.class,
                          AdaptiveZSchedulerPanel.class,
                          MicroscopeNodeType.AdaptiveOptics);
+
+    addPanelMappingEntry(CopilotDevice.class, CopilotDevicePanel.class, MicroscopeNodeType.Other);
 
   }
 
