@@ -1,11 +1,10 @@
-package xwing.copilot.gui.steps.step3recalibrationwithsample;
+package xwing.copilot.gui.steps.step5recalibrationwithsample;
 
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.image.CachedImagePaneRefreshFeature;
 import clearcontrol.gui.jfx.custom.image.ImagePane;
-import clearcontrol.gui.jfx.custom.image.RGBImgImage;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -22,13 +21,11 @@ import xwing.copilot.CopilotDevice;
 import xwing.icon.LaserIcon;
 import xwing.imaging.CalibrationImagerDevice;
 
-import java.util.Random;
-
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
-public class Step3RecalibrationWithSample extends CustomGridPane implements
+public class Step5RecalibrationWithSample extends CustomGridPane implements
                                                                  LoggingFeature,
                                                                  CachedImagePaneRefreshFeature
 {
@@ -51,7 +48,7 @@ public class Step3RecalibrationWithSample extends CustomGridPane implements
   private BoundedVariable<Integer> mCameraChoice;
   BoundedVariable<Double> mZVariable;
 
-  public Step3RecalibrationWithSample(CopilotDevice pCopilotDevice)
+  public Step5RecalibrationWithSample(CopilotDevice pCopilotDevice)
   {
     int lRow = 0;
     mCopilotDevice = pCopilotDevice;

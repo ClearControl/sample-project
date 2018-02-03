@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import xwing.copilot.CopilotDevice;
 import xwing.copilot.gui.steps.StepFactoryBase;
 import xwing.copilot.gui.steps.StepFactoryInterface;
-import xwing.copilot.gui.steps.step3recalibrationwithsample.Step3RecalibrationWithSample;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
