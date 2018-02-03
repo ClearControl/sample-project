@@ -15,7 +15,7 @@ public class Step5RecalibrationWithSampleFactory extends
 {
   public Step5RecalibrationWithSampleFactory()
   {
-    super("Step 3: Re-calibration with sample");
+    super("Step 5: Re-calibration with sample");
   }
 
   public Node getStep(CopilotDevice pCopilotDevice) {
