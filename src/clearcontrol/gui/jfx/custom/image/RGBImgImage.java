@@ -45,11 +45,13 @@ public class RGBImgImage<T extends RealType<T>> extends WritableImage implements
       lRedRA = pRAI.randomAccess();
     } else if (pRAI.numDimensions() == 3) {
       lRedRA = Views.hyperSlice(pRAI, 2, 0).randomAccess();
-      if (pRAI.dimension(2) > 0) {
+      if (pRAI.dimension(2) > 1)
+      {
         lGreenRA = Views.hyperSlice(pRAI, 2, 1).randomAccess();
-      }
-      if (pRAI.dimension(2) > 1) {
-        lBlueRA = Views.hyperSlice(pRAI, 2, 2).randomAccess();
+        if (pRAI.dimension(2) > 2)
+        {
+          lBlueRA = Views.hyperSlice(pRAI, 2, 2).randomAccess();
+        }
       }
     } else {
       warning("Wrong number of dimensions");

@@ -6,6 +6,7 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
+import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import xwing.XWingMicroscope;
 import xwing.copilot.gui.steps.StepFactoryInterface;
 import xwing.main.XWingMain;
@@ -24,6 +25,7 @@ public class CopilotDevice extends VirtualDevice
 
 
   private final int mCalibrationLaserWaveLength = 488;
+  private final int mImagingLaserWaveLength = 594;
 
 
 
@@ -60,7 +62,106 @@ public class CopilotDevice extends VirtualDevice
     return null;
   }
 
+  public LaserDeviceInterface getImagingLaser()
+  {
+    List<LaserDeviceInterface>
+        lLaserList = mXWingMicroscope.getDevices(LaserDeviceInterface.class);
+
+    for(LaserDeviceInterface lLaserDeviceInterface : lLaserList) {
+      if (lLaserDeviceInterface.getWavelengthInNanoMeter() == mImagingLaserWaveLength) {
+        return lLaserDeviceInterface;
+      }
+    }
+    return null;
+  }
+
+
   public BoundedVariable<Number> getZVariable() {
     return getXWingMicroscope().getDevice(DetectionArmInterface.class, 0).getZVariable();
+  }
+
+
+  public void calibrationLaserOn(){
+    LaserDeviceInterface lLaser = getCalibrationLaser();
+    lLaser.setLaserOn(true);
+    lLaser.setLaserPowerOn(true);
+  }
+  public void calibrationLaserOff(){
+    LaserDeviceInterface lLaser = getCalibrationLaser();
+    lLaser.setLaserOn(false);
+    lLaser.setLaserPowerOn(false);
+  }
+
+  public void calibrationLaserFullPower() {
+    LaserDeviceInterface lLaser = getCalibrationLaser();
+    lLaser.setTargetPowerInPercent(100);
+  }
+
+  public void calibrationLaserZeroPower() {
+    LaserDeviceInterface lLaser = getCalibrationLaser();
+    lLaser.setTargetPowerInPercent(0);
+  }
+
+  public void allLightSheetsHeightZero()
+  {
+    XWingMicroscope lXWingMicroscope = getXWingMicroscope();
+    for (LightSheetInterface lLightSheetInterface : lXWingMicroscope.getDevices(LightSheetInterface.class)) {
+      lLightSheetInterface.getHeightVariable().set(lLightSheetInterface.getHeightVariable().getMin());
+    }
+  }
+
+  public void allLightSheetsFullHeight() {
+    XWingMicroscope lXWingMicroscope = getXWingMicroscope();
+    for (LightSheetInterface lLightSheetInterface : lXWingMicroscope.getDevices(LightSheetInterface.class)) {
+      lLightSheetInterface.getHeightVariable().set(lLightSheetInterface.getHeightVariable().getMax());
+    }
+  }
+
+  double mMicroscopeZ = 0;
+  public void setMicroscopeZ(double pZ) {
+    XWingMicroscope lXWingMicroscope = getXWingMicroscope();
+
+    for (int l = 0; l < lXWingMicroscope.getNumberOfLightSheets(); l++) {
+      lXWingMicroscope.getLightSheet(l).getZVariable().set(pZ);
+    }
+
+    for (int d = 0; d < lXWingMicroscope.getNumberOfDetectionArms(); d++) {
+      lXWingMicroscope.getDetectionArm(d).getZVariable().set(pZ);
+    }
+
+    mMicroscopeZ = pZ;
+  }
+
+  public void imagingLaserOn()
+  {
+    LaserDeviceInterface lLaser = getImagingLaser();
+    lLaser.setLaserOn(true);
+    lLaser.setLaserPowerOn(true);
+  }
+
+  public void imagingLaserOff()
+  {
+    LaserDeviceInterface lLaser = getImagingLaser();
+    lLaser.setLaserOn(false);
+    lLaser.setLaserPowerOn(false);
+  }
+
+  public void imagingLaserMildPower()
+  {
+    LaserDeviceInterface lLaser = getImagingLaser();
+    lLaser.setTargetPowerInPercent(100);
+  }
+
+  public void allLasersOff() {
+
+    List<LaserDeviceInterface>
+        lLaserList = mXWingMicroscope.getDevices(LaserDeviceInterface.class);
+
+    for(LaserDeviceInterface lLaserDeviceInterface : lLaserList) {
+      lLaserDeviceInterface.setTargetPowerInPercent(0);
+      lLaserDeviceInterface.setLaserPowerOn(false);
+      lLaserDeviceInterface.setLaserOn(false);
+    }
+
   }
 }

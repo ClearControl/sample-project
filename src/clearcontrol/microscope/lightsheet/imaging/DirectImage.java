@@ -8,6 +8,7 @@ import clearcontrol.stack.imglib2.StackToImgConverter;
 import ij.ImagePlus;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.view.Views;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

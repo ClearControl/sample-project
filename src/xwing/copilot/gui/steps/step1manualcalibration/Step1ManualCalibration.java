@@ -4,6 +4,7 @@ import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.gui.jfx.custom.image.CachedImagePaneRefreshFeature;
 import clearcontrol.gui.jfx.custom.image.ImagePane;
 import clearcontrol.gui.jfx.custom.image.RGBImgImage;
 import clearcontrol.gui.jfx.var.slider.VariableSlider;
@@ -18,34 +19,43 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.util.Duration;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import xwing.XWingMicroscope;
 import xwing.copilot.CopilotDevice;
 import xwing.icon.LaserIcon;
-import xwing.imaging.ImagingThread;
+import xwing.imaging.CalibrationImagerDevice;
+
+import java.util.HashMap;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
 public class Step1ManualCalibration extends CustomGridPane implements
-                                                           LoggingFeature
+                                                           LoggingFeature,
+                                                           CachedImagePaneRefreshFeature
 {
   private CopilotDevice mCopilotDevice;
 
-  private ImagingThread mImagingThread;
+  private CalibrationImagerDevice mCalibrationImagerDevice;
   private ImagePane mC0L01ImagePane;
   private ImagePane mC0L23ImagePane;
   private ImagePane mC1L01ImagePane;
   private ImagePane mC1L23ImagePane;
 
-  public Step1ManualCalibration(CopilotDevice pCopilotDevice) {
+  BoundedVariable<Double> lZVariable;
+
+  public Step1ManualCalibration(CopilotDevice pCopilotDevice)
+  {
     int lRow = 0;
     mCopilotDevice = pCopilotDevice;
 
     // Introductory text
     {
-      String lIntroductionText = "Initial manual calibration will allow you to align focus light sheets and align cameras to each other. Follow the buttons and instructions from top to bottom.";
+      String
+          lIntroductionText =
+          "Initial manual calibration will allow you to align focus light sheets and align cameras to each other. Follow the buttons and instructions from top to bottom.";
 
       Label lLabel = new Label(lIntroductionText);
       add(lLabel, 0, lRow, 4, 1);
@@ -60,27 +70,28 @@ public class Step1ManualCalibration extends CustomGridPane implements
 
       Button lLaserOnButton = new Button("Turn laser on");
       lLaserOnButton.setOnAction((a) -> {
-        calibrationLaserOn();
+        mCopilotDevice.calibrationLaserOn();
       });
       add(lLaserOnButton, 1, lRow);
 
-      Button lLaserOffButton = new Button("Turn laser off");
+      Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setClip(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
-        calibrationLaserOff();
+        mCopilotDevice.allLasersOff();
       });
       add(lLaserOffButton, 2, lRow);
       lRow++;
 
       Button lLaserFullPowerButton = new Button("Laser full power");
       lLaserFullPowerButton.setOnAction((a) -> {
-        calibrationLaserFullPower();
+        mCopilotDevice.calibrationLaserFullPower();
       });
       add(lLaserFullPowerButton, 1, lRow);
       lRow++;
 
       Button lLightSheetHeightZeroButton = new Button("All light sheets height = 0");
       lLightSheetHeightZeroButton.setOnAction((a) -> {
-        allLightSheetsHeightZero();
+        mCopilotDevice.allLightSheetsHeightZero();
       });
       add(lLightSheetHeightZeroButton, 1, lRow);
       lRow++;
@@ -95,31 +106,29 @@ public class Step1ManualCalibration extends CustomGridPane implements
     }
 
     {
-      Button lStart2DImagingButton = new Button("Start 2D imaging");
-      lStart2DImagingButton.setOnAction((a) -> {
-        start2DImaging();
-      });
-      add(lStart2DImagingButton, 1, lRow);
-      lRow++;
-    }
-
-    {
       BoundedVariable<Number> lScopeZVariable = mCopilotDevice.getZVariable();
 
       double lMin = lScopeZVariable.getMin().doubleValue();
       double lMax = lScopeZVariable.getMax().doubleValue();
 
-      BoundedVariable<Double> lZVariable = new BoundedVariable<Double>("Z", (lMin + lMax) / 2.0,
-                                                         lMin, lMax, 1.0);
+      lZVariable =
+          new BoundedVariable<Double>("Z",
+                                      (lMin + lMax) / 2.0,
+                                      lMin,
+                                      lMax,
+                                      1.0);
 
-      mImagingThread = new ImagingThread(pCopilotDevice.getXWingMicroscope(), lZVariable);
+      mCalibrationImagerDevice =
+          pCopilotDevice.getXWingMicroscope()
+                        .getDevice(CalibrationImagerDevice.class, 0);
+      //new CalibrationImagerDevice(pCopilotDevice.getXWingMicroscope(), lZVariable);
 
       final VariableSlider<Double> lSlider =
           new VariableSlider<Double>(lZVariable.getName(),
-                                lZVariable,
-                                lZVariable.getMinVariable(),
-                                lZVariable.getMaxVariable(),
-                                lZVariable.getGranularityVariable(),
+                                     lZVariable,
+                                     lZVariable.getMinVariable(),
+                                     lZVariable.getMaxVariable(),
+                                     lZVariable.getGranularityVariable(),
                                      10.0);
 
       lSlider.getSlider().setPrefWidth(400);
@@ -133,7 +142,7 @@ public class Step1ManualCalibration extends CustomGridPane implements
       add(lSlider.getTextField(), 2, lRow);
 
       lZVariable.addSetListener((oldValue, newValue) -> {
-        setMicroscopeZ(newValue);
+        mCopilotDevice.setMicroscopeZ(newValue);
       });
       lRow++;
     }
@@ -163,7 +172,7 @@ public class Step1ManualCalibration extends CustomGridPane implements
       this.add(lGridPane, 0, lRow, 4, 1);
       lRow++;
 
-      Button lToggleAutoRefreshTimer = new Button("Toggle auto refresh");
+      Button lToggleAutoRefreshTimer = new Button("Imaging on/off");
       lToggleAutoRefreshTimer.setOnAction((a) -> {
         toggleAutoRefreshTimer();
       });
@@ -184,106 +193,84 @@ public class Step1ManualCalibration extends CustomGridPane implements
       add(lZoomOutButton, 1, lRow);
       lRow++;
     }
-  }
 
-  private void calibrationLaserOn(){
-    LaserDeviceInterface lLaser = mCopilotDevice.getCalibrationLaser();
-    lLaser.setLaserOn(true);
-    lLaser.setLaserPowerOn(true);
-  }
-  private void calibrationLaserOff(){
-    LaserDeviceInterface lLaser = mCopilotDevice.getCalibrationLaser();
-    lLaser.setLaserOn(false);
-    lLaser.setLaserPowerOn(false);
-  }
-
-  private void calibrationLaserFullPower() {
-    LaserDeviceInterface lLaser = mCopilotDevice.getCalibrationLaser();
-    lLaser.setTargetPowerInPercent(100);
-  }
-
-  private void allLightSheetsHeightZero()
-  {
-    XWingMicroscope lXWingMicroscope = mCopilotDevice.getXWingMicroscope();
-    for (LightSheetInterface lLightSheetInterface : lXWingMicroscope.getDevices(LightSheetInterface.class)) {
-      lLightSheetInterface.getHeightVariable().set(lLightSheetInterface.getHeightVariable().getMin());
-    }
-  }
-
-  private void start2DImaging() {
-    //XWingMicroscope lXWingMicroscope = mCopilotDevice.getXWingMicroscope();
-    //InteractiveAcquisition lInteractiveAcquisition = lXWingMicroscope.getDevice(InteractiveAcquisition.class, 0);
-    //lInteractiveAcquisition.start2DAcquisition();
-
-    if (mTimeline ==null) {
-      toggleAutoRefreshTimer();
-    }
-  }
-
-  private void stop2DImaging() {
-    //XWingMicroscope lXWingMicroscope = mCopilotDevice.getXWingMicroscope();
-    //InteractiveAcquisition lInteractiveAcquisition = lXWingMicroscope.getDevice(InteractiveAcquisition.class, 0);
-    //lInteractiveAcquisition.stopAcquisition();
-
-    if (mTimeline != null)
     {
-      toggleAutoRefreshTimer();
-    }
-  }
-
-  double mMicroscopeZ = 0;
-  private void setMicroscopeZ(double pZ) {
-    XWingMicroscope lXWingMicroscope = mCopilotDevice.getXWingMicroscope();
-
-    for (int l = 0; l < lXWingMicroscope.getNumberOfLightSheets(); l++) {
-      lXWingMicroscope.getLightSheet(l).getZVariable().set(pZ);
+      add(new Label(
+          "After aligning the crosses, reset the lasers using the following buttons and continue to the next step."),0, lRow, 4, 1);
+      lRow++;
     }
 
-    for (int d = 0; d < lXWingMicroscope.getNumberOfDetectionArms(); d++) {
-      lXWingMicroscope.getDetectionArm(d).getZVariable().set(pZ);
-    }
+    {
+      Button lLaserOffButton = new Button("Turn laser off");
+      lLaserOffButton.setOnAction((a) -> {
+        mCopilotDevice.calibrationLaserOff();
+      });
+      add(lLaserOffButton, 1, lRow);
+      lRow++;
 
-    mMicroscopeZ = pZ;
+      Button lLaserFullPowerButton = new Button("Laser zero power");
+      lLaserFullPowerButton.setOnAction((a) -> {
+        mCopilotDevice.calibrationLaserZeroPower();
+      });
+      add(lLaserFullPowerButton, 1, lRow);
+      lRow++;
+
+      Button lLightSheetHeightZeroButton = new Button("All light sheets height = 0");
+      lLightSheetHeightZeroButton.setOnAction((a) -> {
+        mCopilotDevice.allLightSheetsFullHeight();
+      });
+      add(lLightSheetHeightZeroButton, 1, lRow);
+      lRow++;
+
+
+    }
   }
 
   Timeline mTimeline = null;
+
 
   private synchronized void toggleAutoRefreshTimer() {
     if (mTimeline != null) {
       mTimeline.stop();
       mTimeline = null;
-      mImagingThread.requestStop();
+      mCalibrationImagerDevice.stopTask();
     } else {
       mTimeline = new Timeline(new KeyFrame(Duration.millis(500), (ae) -> {
-            if (mImagingThread.getImageC0L01() != null)
+            if (mCalibrationImagerDevice.getImageC0L01() != null)
             {
-              mC0L01ImagePane.setImage(new RGBImgImage<UnsignedShortType>(mImagingThread.getImageC0L01()));
+              mC0L01ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
+                  mCalibrationImagerDevice.getImageC0L01()));
             }
-            if (mImagingThread.getImageC0L23() != null)
+            if (mCalibrationImagerDevice.getImageC0L23() != null)
             {
-              mC0L23ImagePane.setImage(new RGBImgImage<UnsignedShortType>(mImagingThread.getImageC0L23()));
+              mC0L23ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
+                  mCalibrationImagerDevice.getImageC0L23()));
             }
-            if (mImagingThread.getImageC1L01() != null)
+            if (mCalibrationImagerDevice.getImageC1L01() != null)
             {
-              mC1L01ImagePane.setImage(new RGBImgImage<UnsignedShortType>(mImagingThread.getImageC1L01()));
+              mC1L01ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
+                  mCalibrationImagerDevice.getImageC1L01()));
             }
-            if (mImagingThread.getImageC1L23() != null)
+            if (mCalibrationImagerDevice.getImageC1L23() != null)
             {
-              mC1L23ImagePane.setImage(new RGBImgImage<UnsignedShortType>(mImagingThread.getImageC1L23()));
+              mC1L23ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
+                  mCalibrationImagerDevice.getImageC1L23()));
             }
       }));
       mTimeline.setCycleCount(Animation.INDEFINITE);
       mTimeline.play();
-      mImagingThread.start();
+
+      mCalibrationImagerDevice.setZVariable(lZVariable);
+      mCalibrationImagerDevice.startTask();
     }
   }
 
   private void zoomIn() {
-    mImagingThread.zoomIn();
+    mCalibrationImagerDevice.zoomIn();
   }
 
   private void zoomOut() {
-    mImagingThread.zoomOut();
+    mCalibrationImagerDevice.zoomOut();
   }
 
 }

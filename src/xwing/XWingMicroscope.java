@@ -1,6 +1,7 @@
 package xwing;
 
 import clearcl.ClearCLContext;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
@@ -25,6 +26,8 @@ import xwing.adaptive.AdaptiveZScheduler;
 import xwing.copilot.CopilotDevice;
 import xwing.copilot.gui.steps.StepFactoryInterface;
 import xwing.copilot.gui.steps.step1manualcalibration.Step1ManualCalibrationFactory;
+import xwing.copilot.gui.steps.step3recalibrationwithsample.Step3RecalibrationWithSampleFactory;
+import xwing.imaging.CalibrationImagerDevice;
 import xwing.multicolor.MultiChannelScheduler;
 
 import java.util.ArrayList;
@@ -56,13 +59,6 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
           pMaxStackProcessingQueueLength,
           pThreadPoolSize);
 
-    // initialize copilot
-    {
-      ArrayList<StepFactoryInterface> lCopilotStepList = new ArrayList<StepFactoryInterface>();
-      lCopilotStepList.add(new Step1ManualCalibrationFactory());
-
-      addDevice(0, new CopilotDevice(this, lCopilotStepList));
-    }
   }
 
   /**
@@ -266,6 +262,26 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
     {
       AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
       addDevice(0, lAdaptiveZScheduler);
+    }
+
+  }
+
+  @Override
+  public void addStandardDevices(int pNumberOfControlPlanes) {
+    super.addStandardDevices(pNumberOfControlPlanes);
+
+    // initialize copilot
+    {
+      this.getNumberOfLightSheets();
+      CalibrationImagerDevice
+          lCalibrationImagerDevice = new CalibrationImagerDevice(this, new Variable<Double>("", 0.0));
+      addDevice(0, lCalibrationImagerDevice);
+
+      ArrayList<StepFactoryInterface> lCopilotStepList = new ArrayList<StepFactoryInterface>();
+      lCopilotStepList.add(new Step1ManualCalibrationFactory());
+      lCopilotStepList.add(new Step3RecalibrationWithSampleFactory());
+
+      addDevice(0, new CopilotDevice(this, lCopilotStepList));
     }
 
   }
