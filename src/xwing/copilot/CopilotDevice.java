@@ -5,6 +5,7 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
+import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
 import xwing.XWingMicroscope;
@@ -163,5 +164,19 @@ public class CopilotDevice extends VirtualDevice
       lLaserDeviceInterface.setLaserOn(false);
     }
 
+  }
+
+  public void startCalibration()
+  {
+    CalibrationEngine lCalibrationEngine = getXWingMicroscope().getDevice(CalibrationEngine.class, 0);
+    lCalibrationEngine.getCalibrateZVariable().set(true);
+    lCalibrationEngine.getCalibrateZWithSampleVariable().set(false);
+    lCalibrationEngine.getCalibrateAVariable().set(true);
+    lCalibrationEngine.getCalibrateWVariable().set(false);
+    lCalibrationEngine.getCalibrateXYVariable().set(false);
+    lCalibrationEngine.getCalibrateHPVariable().set(false);
+    lCalibrationEngine.getCalibratePVariable().set(false);
+    lCalibrationEngine.getCalibrateWPVariable().set(false);
+    lCalibrationEngine.startTask();
   }
 }

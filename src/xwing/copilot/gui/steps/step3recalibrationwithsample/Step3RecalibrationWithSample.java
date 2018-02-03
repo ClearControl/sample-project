@@ -91,6 +91,10 @@ public class Step3RecalibrationWithSample extends CustomGridPane implements
     }
 
     {
+      LaserIcon lLaserIcon = new LaserIcon(75, 75);
+      add(lLaserIcon, 0, lRow, 1, 3);
+      //lRow++;
+
       Button lLaserOnButton = new Button("Turn laser on");
       lLaserOnButton.setOnAction((a) -> {
         mCopilotDevice.imagingLaserOn();
