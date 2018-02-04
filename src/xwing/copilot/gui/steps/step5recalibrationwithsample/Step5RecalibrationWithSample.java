@@ -4,6 +4,7 @@ import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.image.CachedImagePaneRefreshFeature;
 import clearcontrol.gui.jfx.custom.image.ImagePane;
@@ -15,10 +16,12 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.util.Duration;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
@@ -135,30 +138,23 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
       Label lLabel = new Label(lIntroductionText);
       lLabel.setWrapText(true);
       lLabel.setMaxWidth(150);
-      add(lLabel, 0, lRow, 1, 1);
+      add(lLabel, 0, lRow);
       lRow++;
     }
 
     {
-      Button lLaserOnButton = new Button("Turn laser on");
+      Button lLaserOnButton = new Button("Turn imaging laser on");
+      lLaserOnButton.setMaxWidth(Double.MAX_VALUE);
       lLaserOnButton.setGraphic(new LaserIcon(25, 25));
       lLaserOnButton.setOnAction((a) -> {
         mCopilotDevice.imagingLaserOn();
       });
-      lLaserOnButton.setMaxWidth(150);
       add(lLaserOnButton, 0, lRow);
       lRow++;
 
-      Button lLaserOffButton = new Button("Turn all lasers off");
-      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
-      lLaserOffButton.setOnAction((a) -> {
-        mCopilotDevice.allLasersOff();
-      });
-      lLaserOffButton.setMaxWidth(150);
-      add(lLaserOffButton, 0, lRow);
-      lRow++;
 
       Button lLaserMildPowerButton = new Button("Laser mild power");
+      lLaserMildPowerButton.setMaxWidth(Double.MAX_VALUE);
       lLaserMildPowerButton.setOnAction((a) -> {
         mCopilotDevice.imagingLaserMildPower();
       });
@@ -169,7 +165,24 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
 
 
     {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+
+    {
+      Label lLabel = new Label("Use these tools to configure the view");
+      lLabel.setWrapText(true);
+      lLabel.setMaxWidth(150);
+      add(lLabel, 0, lRow);
+      lRow++;
+    }
+
+    {
       Button lToggleAutoRefreshTimer = new Button("Imaging on/off");
+      lToggleAutoRefreshTimer.setMaxWidth(Double.MAX_VALUE);
       lToggleAutoRefreshTimer.setOnAction((a) -> {
         toggleAutoRefreshTimer();
       });
@@ -184,6 +197,18 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
       lRow++;
     }
 
+
+    {
+      Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setMaxWidth(Double.MAX_VALUE);
+      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
+      lLaserOffButton.setOnAction((a) -> {
+        mCopilotDevice.allLasersOff();
+      });
+      add(lLaserOffButton, 0, lRow);
+      lRow++;
+
+    }
 
 
     CustomGridPane lViewPositionGridPane = new CustomGridPane();

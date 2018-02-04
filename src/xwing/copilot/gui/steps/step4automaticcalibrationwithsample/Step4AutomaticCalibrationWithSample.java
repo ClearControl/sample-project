@@ -39,7 +39,9 @@ public class Step4AutomaticCalibrationWithSample extends
           "Automatic power calibration takes about 5 minutes. Turn the laser on and start calibration. If all steps succeeded, continue.";
 
       Label lLabel = new Label(lIntroductionText);
-      add(lLabel, 0, lRow, 4, 1);
+      lLabel.setWrapText(true);
+      lLabel.setMaxWidth(150);
+      add(lLabel, 0, lRow);
       lRow++;
     }
 
@@ -47,23 +49,18 @@ public class Step4AutomaticCalibrationWithSample extends
     {
 
       Button lLaserOnButton = new Button("Turn imaging laser on");
+      lLaserOnButton.setMaxWidth(Double.MAX_VALUE);
       lLaserOnButton.setGraphic(new LaserIcon(25, 25));
       lLaserOnButton.setOnAction((a) -> {
         mCopilotDevice.imagingLaserOn();
       });
       add(lLaserOnButton, 0, lRow);
-
-      Button lLaserOffButton = new Button("Turn all lasers off");
-      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
-      lLaserOffButton.setOnAction((a) -> {
-        mCopilotDevice.allLasersOff();
-      });
-      add(lLaserOffButton, 1, lRow);
       lRow++;
 
       Button
           lLaserMildPowerButton =
           new Button("Imaging laser mild power");
+      lLaserMildPowerButton.setMaxWidth(Double.MAX_VALUE);
       lLaserMildPowerButton.setOnAction((a) -> {
         mCopilotDevice.imagingLaserMildPower();
       });
@@ -73,6 +70,7 @@ public class Step4AutomaticCalibrationWithSample extends
       Button
           lLightSheetHeightZeroButton =
           new Button("All light sheets full height");
+      lLightSheetHeightZeroButton.setMaxWidth(Double.MAX_VALUE);
       lLightSheetHeightZeroButton.setOnAction((a) -> {
         mCopilotDevice.allLightSheetsFullHeight();
       });
@@ -82,6 +80,7 @@ public class Step4AutomaticCalibrationWithSample extends
 
     {
       Button lCalibrateButton = new Button("Start Calibration");
+      lCalibrateButton.setMaxWidth(Double.MAX_VALUE);
       lCalibrateButton.setOnAction((a) -> {
         mCopilotDevice.startCalibrationWithSample();
       });
@@ -89,10 +88,16 @@ public class Step4AutomaticCalibrationWithSample extends
       lRow++;
     }
 
+
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);
-      add(lSeparator, 0, lRow, 4, 1);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+    {
+      add(new Label("Wait"), 0, lRow);
       lRow++;
     }
 
@@ -115,12 +120,20 @@ public class Step4AutomaticCalibrationWithSample extends
       lTitledPane.setAnimated(false);
       lTitledPane.setExpanded(true);
       GridPane.setColumnSpan(lTitledPane, 3);
-      add(lTitledPane, 0, lRow, 4, 1);
+      add(lTitledPane, 1, 0, 4, 10);
+    }
+
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      add(lSeparator, 0, lRow);
       lRow++;
     }
 
     {
       Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setMaxWidth(Double.MAX_VALUE);
       lLaserOffButton.setGraphic(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
         mCopilotDevice.allLasersOff();

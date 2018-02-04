@@ -56,7 +56,7 @@ public class Step3SampleMounting extends CustomGridPane implements
 
 
     BoundedVariable<Double> lMaxZVariable = new BoundedVariable<Double>("MaxZ",
-                                                                        lRemoteZVariable.getMin().doubleValue(),
+                                                                        lRemoteZVariable.getMax().doubleValue(),
                                                                         lRemoteZVariable.getMin().doubleValue(),
                                                                         lRemoteZVariable.getMax().doubleValue(),
                                                                         lRemoteZVariable.getGranularity().doubleValue());
@@ -90,16 +90,18 @@ public class Step3SampleMounting extends CustomGridPane implements
     {
       String
           lIntroductionText =
-          "Turn all lasers off, mount your sample and tell us from the Z range the sample is located in.";
+          "Turn all lasers off, mount your sample and enter the Z range the sample is located in.";
 
       Label lLabel = new Label(lIntroductionText);
       lLabel.setWrapText(true);
-      add(lLabel, 0, lRow, 3, 1);
+      lLabel.setMaxWidth(150);
+      add(lLabel, 0, lRow);
       lRow++;
     }
 
     {
       Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setMaxWidth(Double.MAX_VALUE);
       lLaserOffButton.setGraphic(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
         mCopilotDevice.allLasersOff();
@@ -108,13 +110,6 @@ public class Step3SampleMounting extends CustomGridPane implements
       lRow++;
     }
 
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 3);
-      add(lSeparator, 0, lRow);
-      lRow++;
-    }
 
 
 
@@ -124,17 +119,8 @@ public class Step3SampleMounting extends CustomGridPane implements
       if (lStage != null)
       {
         BasicThreeAxesStagePanel lStagePanel = new BasicThreeAxesStagePanel(lStage);
-        add(lStagePanel, 0, lRow, 3, 1);
-        lRow++;
+        add(lStagePanel, 1, 1, 3, 10);
       }
-    }
-
-    {
-      Separator lSeparator = new Separator();
-      lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 3);
-      add(lSeparator, 0, lRow);
-      lRow++;
     }
 
     {
@@ -145,28 +131,34 @@ public class Step3SampleMounting extends CustomGridPane implements
       Label lLabel = new Label(lIntroductionText);
       lLabel.setWrapText(true);
       lLabel.setMaxWidth(150);
-      add(lLabel, 0, lRow, 3, 1);
+      add(lLabel, 0, lRow);
       lRow++;
     }
 
 
     {
       add(new Label(lMinZVariable.getName()), 0, lRow);
+      lRow++;
+
       NumberVariableTextField
           lField =
           new NumberVariableTextField(lMinZVariable.getName(),
                                       lMinZVariable);
-      add(lField.getTextField(), 1, lRow);
+      lField.getTextField().setMaxWidth(Double.MAX_VALUE);
+      add(lField.getTextField(), 0, lRow);
       lRow++;
     }
 
     {
       add(new Label(lMaxZVariable.getName()), 0, lRow);
+      lRow++;
+
       NumberVariableTextField
           lField =
           new NumberVariableTextField(lMaxZVariable.getName(),
                                       lMaxZVariable);
-      add(lField.getTextField(), 1, lRow);
+      lField.getTextField().setMaxWidth(Double.MAX_VALUE);
+      add(lField.getTextField(), 0, lRow);
       lRow++;
     }
 
