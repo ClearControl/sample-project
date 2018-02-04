@@ -49,21 +49,21 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
       lLaserOnButton.setOnAction((a) -> {
         mCopilotDevice.calibrationLaserOn();
       });
-      add(lLaserOnButton, 1, lRow);
+      add(lLaserOnButton, 0, lRow);
 
       Button lLaserOffButton = new Button("Turn all lasers off");
       lLaserOffButton.setGraphic(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
         mCopilotDevice.allLasersOff();
       });
-      add(lLaserOffButton, 2, lRow);
+      add(lLaserOffButton, 1, lRow);
       lRow++;
 
       Button lLaserFullPowerButton = new Button("Laser full power");
       lLaserFullPowerButton.setOnAction((a) -> {
         mCopilotDevice.calibrationLaserFullPower();
       });
-      add(lLaserFullPowerButton, 1, lRow);
+      add(lLaserFullPowerButton, 0, lRow);
       lRow++;
     }
 
@@ -74,7 +74,7 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
       lLightSheetHeightZeroButton.setOnAction((a) -> {
         mCopilotDevice.allLightSheetsHeightZero();
       });
-      add(lLightSheetHeightZeroButton, 1, lRow);
+      add(lLightSheetHeightZeroButton, 0, lRow);
       lRow++;
     }
 
@@ -83,7 +83,7 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
       lCalibrateButton.setOnAction((a) -> {
         mCopilotDevice.startCalibration();
       });
-      add(lCalibrateButton, 1, lRow);
+      add(lCalibrateButton, 0, lRow);
       lRow++;
     }
 
@@ -114,15 +114,14 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
       lTitledPane.setAnimated(false);
       lTitledPane.setExpanded(true);
       GridPane.setColumnSpan(lTitledPane, 3);
-      add(lTitledPane, 0, lRow);
+      add(lTitledPane, 0, lRow, 4, 1);
       lRow++;
     }
 
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 3);
-      add(lSeparator, 0, lRow);
+      add(lSeparator, 0, lRow, 4 ,1);
       lRow++;
     }
 
@@ -132,14 +131,14 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
       lLaserOffButton.setOnAction((a) -> {
         mCopilotDevice.allLasersOff();
       });
-      add(lLaserOffButton, 2, lRow);
+      add(lLaserOffButton, 0, lRow);
       lRow++;
 
       Button lLaserFullPowerButton = new Button("Laser zero power");
       lLaserFullPowerButton.setOnAction((a) -> {
         mCopilotDevice.calibrationLaserZeroPower();
       });
-      add(lLaserFullPowerButton, 1, lRow);
+      add(lLaserFullPowerButton, 0, lRow);
       lRow++;
 
       Button lLightSheetFullHeightButton =
@@ -147,7 +146,7 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
       lLightSheetFullHeightButton.setOnAction((a) -> {
         mCopilotDevice.allLightSheetsFullHeight();
       });
-      add(lLightSheetFullHeightButton, 1, lRow);
+      add(lLightSheetFullHeightButton, 0, lRow);
       lRow++;
     }
 

@@ -28,7 +28,7 @@ import xwing.copilot.gui.steps.StepFactoryInterface;
 import xwing.copilot.gui.steps.step1manualcalibration.Step1ManualCalibrationFactory;
 import xwing.copilot.gui.steps.step2automaticcalibration.Step2AutomaticCalibrationFactory;
 import xwing.copilot.gui.steps.step3samplemounting.Step3SampleMountingFactory;
-import xwing.copilot.gui.steps.step4powercalibrationwithsample.Step4PowerCalibrationWithSampleFactory;
+import xwing.copilot.gui.steps.step4automaticcalibrationwithsample.Step4AutomaticCalibrationWithSampleFactory;
 import xwing.copilot.gui.steps.step5recalibrationwithsample.Step5RecalibrationWithSampleFactory;
 import xwing.imaging.CalibrationImagerDevice;
 import xwing.multicolor.MultiChannelScheduler;
@@ -284,7 +284,7 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       lCopilotStepList.add(new Step1ManualCalibrationFactory());
       lCopilotStepList.add(new Step2AutomaticCalibrationFactory());
       lCopilotStepList.add(new Step3SampleMountingFactory());
-      lCopilotStepList.add(new Step4PowerCalibrationWithSampleFactory());
+      lCopilotStepList.add(new Step4AutomaticCalibrationWithSampleFactory());
       lCopilotStepList.add(new Step5RecalibrationWithSampleFactory());
 
       addDevice(0, new CopilotDevice(this, lCopilotStepList));

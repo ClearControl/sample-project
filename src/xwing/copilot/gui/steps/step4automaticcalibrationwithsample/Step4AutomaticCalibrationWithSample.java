@@ -1,4 +1,4 @@
-package xwing.copilot.gui.steps.step4powercalibrationwithsample;
+package xwing.copilot.gui.steps.step4automaticcalibrationwithsample;
 
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
@@ -18,13 +18,14 @@ import xwing.icon.LaserIcon;
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
-public class Step4PowerCalibrationWithSample extends CustomGridPane implements
-                                                                    LoggingFeature
+public class Step4AutomaticCalibrationWithSample extends
+                                                 CustomGridPane implements
+                                                                LoggingFeature
 {
-
   CopilotDevice mCopilotDevice;
 
-  public Step4PowerCalibrationWithSample(CopilotDevice pCopilotDevice) {
+  public Step4AutomaticCalibrationWithSample(CopilotDevice pCopilotDevice)
+  {
 
     setAlignment(Pos.TOP_LEFT);
 
@@ -50,66 +51,81 @@ public class Step4PowerCalibrationWithSample extends CustomGridPane implements
       lLaserOnButton.setOnAction((a) -> {
         mCopilotDevice.imagingLaserOn();
       });
-      add(lLaserOnButton, 1, lRow);
+      add(lLaserOnButton, 0, lRow);
 
       Button lLaserOffButton = new Button("Turn all lasers off");
       lLaserOffButton.setGraphic(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
         mCopilotDevice.allLasersOff();
       });
-      add(lLaserOffButton, 2, lRow);
+      add(lLaserOffButton, 1, lRow);
       lRow++;
 
-      Button lLaserMildPowerButton = new Button("Imaging laser mild power");
+      Button
+          lLaserMildPowerButton =
+          new Button("Imaging laser mild power");
       lLaserMildPowerButton.setOnAction((a) -> {
         mCopilotDevice.imagingLaserMildPower();
       });
-      add(lLaserMildPowerButton, 1, lRow);
+      add(lLaserMildPowerButton, 0, lRow);
       lRow++;
 
       Button
           lLightSheetHeightZeroButton =
-          new Button("All light sheets height = 0");
+          new Button("All light sheets full height");
       lLightSheetHeightZeroButton.setOnAction((a) -> {
-        mCopilotDevice.allLightSheetsHeightZero();
+        mCopilotDevice.allLightSheetsFullHeight();
       });
-      add(lLightSheetHeightZeroButton, 1, lRow);
+      add(lLightSheetHeightZeroButton, 0, lRow);
       lRow++;
     }
 
     {
       Button lCalibrateButton = new Button("Start Calibration");
       lCalibrateButton.setOnAction((a) -> {
-        mCopilotDevice.startCalibration();
+        mCopilotDevice.startCalibrationWithSample();
       });
-      add(lCalibrateButton, 1, lRow);
+      add(lCalibrateButton, 0, lRow);
       lRow++;
     }
 
     {
       Separator lSeparator = new Separator();
       lSeparator.setOrientation(Orientation.HORIZONTAL);
-      GridPane.setColumnSpan(lSeparator, 3);
-      add(lSeparator, 0, lRow);
+      add(lSeparator, 0, lRow, 4, 1);
       lRow++;
     }
 
     {
       CalibrationEngine
-          lCalibrationEngine = pCopilotDevice.getXWingMicroscope().getDevice(CalibrationEngine.class, 0);
+          lCalibrationEngine =
+          pCopilotDevice.getXWingMicroscope()
+                        .getDevice(CalibrationEngine.class, 0);
 
-      ConfigurationStatePanel lConfigurationStatePanel =
+      ConfigurationStatePanel
+          lConfigurationStatePanel =
           new ConfigurationStatePanel(lCalibrationEngine.getModuleList(),
                                       lCalibrationEngine.getLightSheetMicroscope()
                                                         .getNumberOfLightSheets());
 
-      TitledPane lTitledPane =
+      TitledPane
+          lTitledPane =
           new TitledPane("Calibration state",
                          lConfigurationStatePanel);
       lTitledPane.setAnimated(false);
       lTitledPane.setExpanded(true);
       GridPane.setColumnSpan(lTitledPane, 3);
-      add(lTitledPane, 0, lRow);
+      add(lTitledPane, 0, lRow, 4, 1);
+      lRow++;
+    }
+
+    {
+      Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
+      lLaserOffButton.setOnAction((a) -> {
+        mCopilotDevice.allLasersOff();
+      });
+      add(lLaserOffButton, 0, lRow);
       lRow++;
     }
   }

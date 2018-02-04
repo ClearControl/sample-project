@@ -1,25 +1,24 @@
-package xwing.copilot.gui.steps.step4powercalibrationwithsample;
+package xwing.copilot.gui.steps.step4automaticcalibrationwithsample;
 
 import javafx.scene.Node;
 import xwing.copilot.CopilotDevice;
 import xwing.copilot.gui.steps.StepFactoryBase;
 import xwing.copilot.gui.steps.StepFactoryInterface;
-import xwing.copilot.gui.steps.step2automaticcalibration.Step2AutomaticCalibration;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
-public class Step4PowerCalibrationWithSampleFactory extends
+public class Step4AutomaticCalibrationWithSampleFactory extends
                                                     StepFactoryBase implements
                                                                     StepFactoryInterface
 {
-  public Step4PowerCalibrationWithSampleFactory()
+  public Step4AutomaticCalibrationWithSampleFactory()
   {
-    super("Step 4: Power calibration with sample");
+    super("Step 4: Automatic calibration with sample");
   }
 
   public Node getStep(CopilotDevice pCopilotDevice) {
-    return new Step4PowerCalibrationWithSample(pCopilotDevice);
+    return new Step4AutomaticCalibrationWithSample(pCopilotDevice);
   }
 }

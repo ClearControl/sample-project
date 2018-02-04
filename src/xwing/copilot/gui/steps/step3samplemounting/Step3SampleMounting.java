@@ -44,15 +44,6 @@ public class Step3SampleMounting extends CustomGridPane implements
 
     int lRow = 0;
 
-    {
-      Button lLaserOffButton = new Button("Turn all lasers off");
-      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
-      lLaserOffButton.setOnAction((a) -> {
-        mCopilotDevice.allLasersOff();
-      });
-      add(lLaserOffButton, 2, lRow);
-      lRow++;
-    }
 
     BoundedVariable<Number> lRemoteZVariable = mCopilotDevice.getXWingMicroscope().getDetectionArm(0).getZVariable();
 
@@ -103,8 +94,17 @@ public class Step3SampleMounting extends CustomGridPane implements
 
       Label lLabel = new Label(lIntroductionText);
       lLabel.setWrapText(true);
-      lLabel.setMaxWidth(150);
-      add(lLabel, 0, lRow, 1, 1);
+      add(lLabel, 0, lRow, 3, 1);
+      lRow++;
+    }
+
+    {
+      Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
+      lLaserOffButton.setOnAction((a) -> {
+        mCopilotDevice.allLasersOff();
+      });
+      add(lLaserOffButton, 0, lRow);
       lRow++;
     }
 
@@ -117,13 +117,14 @@ public class Step3SampleMounting extends CustomGridPane implements
     }
 
 
+
     {
       BasicThreeAxesStageInterface
           lStage = mCopilotDevice.getXWingMicroscope().getDevice(BasicThreeAxesStageInterface.class, 0);
       if (lStage != null)
       {
         BasicThreeAxesStagePanel lStagePanel = new BasicThreeAxesStagePanel(lStage);
-        add(lStagePanel, 0, lRow, 4, 1);
+        add(lStagePanel, 0, lRow, 3, 1);
         lRow++;
       }
     }
@@ -135,6 +136,19 @@ public class Step3SampleMounting extends CustomGridPane implements
       add(lSeparator, 0, lRow);
       lRow++;
     }
+
+    {
+      String
+          lIntroductionText =
+          "In which Z range is the sample located?";
+
+      Label lLabel = new Label(lIntroductionText);
+      lLabel.setWrapText(true);
+      lLabel.setMaxWidth(150);
+      add(lLabel, 0, lRow, 3, 1);
+      lRow++;
+    }
+
 
     {
       add(new Label(lMinZVariable.getName()), 0, lRow);
