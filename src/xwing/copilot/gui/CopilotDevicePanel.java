@@ -53,6 +53,7 @@ public class CopilotDevicePanel extends CustomGridPane
     }
     //this.add(lTabPane, 0, lRow);
 
+    /*
     {
 
       Button lPrevButton = new Button("Prev");
@@ -63,5 +64,6 @@ public class CopilotDevicePanel extends CustomGridPane
 
       lRow++;
     }
+    */
   }
 }
