@@ -2,14 +2,14 @@ package clearcontrol.devices.stages.kcube.impl;
 
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.devices.stages.BasicThreeAxisStageInterface;
+import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * January 2018
  */
 public class KCubeThreeAxesStageDevice extends VirtualDevice implements
-                                                             BasicThreeAxisStageInterface
+                                                             BasicThreeAxesStageInterface
 {
   private Variable<Double> mPositionX;
   private Variable<Double> mPositionY;

@@ -5,6 +5,7 @@ import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.configurationstate.gui.ConfigurationStatePanel;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -24,6 +25,8 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
 
   public Step2AutomaticCalibration(CopilotDevice pCopilotDevice)
   {
+    setAlignment(Pos.TOP_LEFT);
+
     int lRow = 0;
     mCopilotDevice = pCopilotDevice;
 
@@ -40,18 +43,16 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
 
     // turn laser on
     {
-      LaserIcon lLaserIcon = new LaserIcon(75, 75);
-      add(lLaserIcon, 0, lRow, 1, 3);
-      //lRow++;
 
-      Button lLaserOnButton = new Button("Turn laser on");
+      Button lLaserOnButton = new Button("Turn calibration laser on");
+      lLaserOnButton.setGraphic(new LaserIcon(25, 25));
       lLaserOnButton.setOnAction((a) -> {
         mCopilotDevice.calibrationLaserOn();
       });
       add(lLaserOnButton, 1, lRow);
 
       Button lLaserOffButton = new Button("Turn all lasers off");
-      lLaserOffButton.setClip(new LaserIcon(25, 25));
+      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
         mCopilotDevice.allLasersOff();
       });
@@ -64,7 +65,9 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
       });
       add(lLaserFullPowerButton, 1, lRow);
       lRow++;
+    }
 
+    {
       Button
           lLightSheetHeightZeroButton =
           new Button("All light sheets height = 0");
@@ -93,20 +96,58 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
     }
 
     {
-      CalibrationEngine lCalibrationEngine = pCopilotDevice.getXWingMicroscope().getDevice(CalibrationEngine.class, 0);
+      CalibrationEngine
+          lCalibrationEngine =
+          pCopilotDevice.getXWingMicroscope()
+                        .getDevice(CalibrationEngine.class, 0);
 
-      ConfigurationStatePanel lConfigurationStatePanel =
+      ConfigurationStatePanel
+          lConfigurationStatePanel =
           new ConfigurationStatePanel(lCalibrationEngine.getModuleList(),
                                       lCalibrationEngine.getLightSheetMicroscope()
                                                         .getNumberOfLightSheets());
 
-      TitledPane lTitledPane =
+      TitledPane
+          lTitledPane =
           new TitledPane("Calibration state",
                          lConfigurationStatePanel);
       lTitledPane.setAnimated(false);
       lTitledPane.setExpanded(true);
       GridPane.setColumnSpan(lTitledPane, 3);
       add(lTitledPane, 0, lRow);
+      lRow++;
+    }
+
+    {
+      Separator lSeparator = new Separator();
+      lSeparator.setOrientation(Orientation.HORIZONTAL);
+      GridPane.setColumnSpan(lSeparator, 3);
+      add(lSeparator, 0, lRow);
+      lRow++;
+    }
+
+    {
+      Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
+      lLaserOffButton.setOnAction((a) -> {
+        mCopilotDevice.allLasersOff();
+      });
+      add(lLaserOffButton, 2, lRow);
+      lRow++;
+
+      Button lLaserFullPowerButton = new Button("Laser zero power");
+      lLaserFullPowerButton.setOnAction((a) -> {
+        mCopilotDevice.calibrationLaserZeroPower();
+      });
+      add(lLaserFullPowerButton, 1, lRow);
+      lRow++;
+
+      Button lLightSheetFullHeightButton =
+          new Button("All light sheets to full height");
+      lLightSheetFullHeightButton.setOnAction((a) -> {
+        mCopilotDevice.allLightSheetsFullHeight();
+      });
+      add(lLightSheetFullHeightButton, 1, lRow);
       lRow++;
     }
 

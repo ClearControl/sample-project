@@ -1,14 +1,16 @@
 package xwing.copilot.gui.steps.step5recalibrationwithsample;
 
 import clearcontrol.core.log.LoggingFeature;
+import clearcontrol.core.variable.Variable;
+import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.custom.image.CachedImagePaneRefreshFeature;
 import clearcontrol.gui.jfx.custom.image.ImagePane;
 import clearcontrol.gui.jfx.custom.image.RGBImgImage;
+import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import clearcontrol.microscope.lightsheet.state.tables.InterpolationTables;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -18,7 +20,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.util.Duration;
-import jnr.ffi.annotations.In;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -58,9 +59,12 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
   BoundedVariable<Double> mZVariable;
 
   private InterpolatedAcquisitionState mInterpolatedAcqusitionState;
+  Variable<Boolean> mInterpolatedAcquisitionVariable;
 
   public Step5RecalibrationWithSample(CopilotDevice pCopilotDevice)
   {
+    setAlignment(Pos.TOP_LEFT);
+
     int lRow = 0;
     mCopilotDevice = pCopilotDevice;
     mInterpolatedAcqusitionState = (InterpolatedAcquisitionState)(pCopilotDevice.getXWingMicroscope()
@@ -73,10 +77,20 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                                      pCopilotDevice.getXWingMicroscope()
                                                    .getNumberOfDetectionArms()-1);
 
-    mControlPlaneIndexVariable =         new BoundedVariable<Integer>("Control plane index",
+    mControlPlaneIndexVariable = new BoundedVariable<Integer>("Control plane index",
                                                                       0,
                                                                       0,
                                                                       mInterpolatedAcqusitionState.getNumberOfControlPlanes()-1);
+
+    mControlPlaneIndexVariable.addSetListener(new VariableSetListener<Integer>()
+    {
+      @Override public void setEvent(Integer pCurrentValue,
+                                     Integer pNewValue)
+      {
+        double z = mInterpolatedAcqusitionState.getControlPlaneZ(pNewValue);
+        mZVariable.set(z);
+      }
+    });
 
 
     BoundedVariable<Number>
@@ -91,9 +105,26 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                                     lMax,
                                     1.0);
 
+    // indirectly set Z variable
+    mControlPlaneIndexVariable.set(mInterpolatedAcqusitionState.getNumberOfControlPlanes() / 2);
+
     mCalibrationImagerDevice =
         pCopilotDevice.getXWingMicroscope()
                       .getDevice(CalibrationImagerDevice.class, 0);
+
+    mInterpolatedAcquisitionVariable = new Variable<Boolean>("Interpolated acquisition", true);
+    mInterpolatedAcquisitionVariable.addSetListener((oldValue, newValue) -> {
+      if (newValue) {
+        mCalibrationImagerDevice.setInterpolatedAcquisitionState(mInterpolatedAcqusitionState);
+      } else {
+        mCalibrationImagerDevice.setInterpolatedAcquisitionState(null);
+      }
+    });
+    mInterpolatedAcquisitionVariable.set(true);
+
+
+
+
 
     // Introductory text
     {
@@ -147,6 +178,14 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
       lRow++;
     }
 
+    {
+      add(new VariableCheckBox(mInterpolatedAcquisitionVariable.getName(),
+                               mInterpolatedAcquisitionVariable), 0, lRow);
+      lRow++;
+    }
+
+
+
     CustomGridPane lViewPositionGridPane = new CustomGridPane();
     lViewPositionGridPane.setGap(0);
     {
@@ -157,8 +196,8 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
           new NumberVariableTextField(mCameraChoice.getName(),
                                       mCameraChoice);
       lField.getTextField().setMaxWidth(25);
-
       lViewPositionGridPane.add(lField.getTextField(), 2, 1);
+
       Button lCamera0Button = new Button("Front");
       lCamera0Button.setOnAction((a) -> {
         mCameraChoice.set(0);
@@ -166,6 +205,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
       lCamera0Button.setAlignment(Pos.CENTER);
       lCamera0Button.setMaxWidth(Double.MAX_VALUE);
       lViewPositionGridPane.add(lCamera0Button, 0, 1, 2,1);
+
       Button lCamera1Button = new Button("Back");
       lCamera1Button.setOnAction((a) -> {
         mCameraChoice.set(1);
@@ -191,6 +231,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
         mControlPlaneIndexVariable.set(0);
       });
       lViewPositionGridPane.add(lToFirstControlPlane, 0, 3);
+
       Button lToPreviousControlPlane = new Button("<");
       lToPreviousControlPlane.setOnAction((a) -> {
         if (mControlPlaneIndexVariable.get() > mControlPlaneIndexVariable.getMin())
@@ -200,6 +241,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
         }
       });
       lViewPositionGridPane.add(lToPreviousControlPlane, 1, 3);
+
       Button lToNextControlPlane = new Button(">");
       lToNextControlPlane.setOnAction((a) -> {
         if (mControlPlaneIndexVariable.get() < mControlPlaneIndexVariable.getMax())
@@ -209,11 +251,25 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
         }
       });
       lViewPositionGridPane.add(lToNextControlPlane, 3, 3);
+
       Button lToLastControlPlane = new Button(">|");
       lToLastControlPlane.setOnAction((a) -> {
         mControlPlaneIndexVariable.set(mControlPlaneIndexVariable.getMax());
       });
       lViewPositionGridPane.add(lToLastControlPlane, 4, 3);
+    }
+
+    {
+      lViewPositionGridPane.add(new Label("Z"), 0, 4, 3, 1);
+      NumberVariableTextField
+          lField =
+          new NumberVariableTextField(mZVariable.getName(),
+                                      mZVariable);
+      lField.getTextField().setMaxWidth(75);
+      lViewPositionGridPane.add(lField.getTextField(), 1, 5, 3, 1);
+
+
+
     }
 
 
@@ -245,16 +301,22 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
 
     CustomGridPane lImagesGridPane = new CustomGridPane();
     lImagesGridPane.setGap(10);
-    lImagesGridPane.add(mTopLeftImagePane, 0, 0);
-    lImagesGridPane.add(mTopImagePane, 1, 0);
-    lImagesGridPane.add(mTopRightImagePane, 2, 0);
-    lImagesGridPane.add(mLeftImagePane, 0, 1);
-    lImagesGridPane.add(mRightImagePane, 2, 1);
-    lImagesGridPane.add(mBottomLeftImagePane, 0, 2);
-    lImagesGridPane.add(mBottomImagePane, 1, 2);
-    lImagesGridPane.add(mBottomRightImagePane, 2, 2);
+    lImagesGridPane.add(mTopLeftImagePane,     1, 0);
+    lImagesGridPane.add(mTopImagePane,         2, 0);
+    lImagesGridPane.add(mTopRightImagePane,    3, 0);
+    lImagesGridPane.add(mLeftImagePane,        1, 1);
+    lImagesGridPane.add(mRightImagePane,       3, 1);
+    lImagesGridPane.add(mBottomLeftImagePane,  1, 2);
+    lImagesGridPane.add(mBottomImagePane,      2, 2);
+    lImagesGridPane.add(mBottomRightImagePane, 3, 2);
 
-    lImagesGridPane.add(lViewPositionGridPane, 1, 1);
+
+    lImagesGridPane.add(new ControlPlanePanel(mInterpolatedAcqusitionState, mControlPlaneIndexVariable, 2), 0, 0);
+    lImagesGridPane.add(new ControlPlanePanel(mInterpolatedAcqusitionState, mControlPlaneIndexVariable, 3), 0, 2);
+    lImagesGridPane.add(new ControlPlanePanel(mInterpolatedAcqusitionState, mControlPlaneIndexVariable, 1), 4, 0);
+    lImagesGridPane.add(new ControlPlanePanel(mInterpolatedAcqusitionState, mControlPlaneIndexVariable, 0), 4, 2);
+
+    lImagesGridPane.add(lViewPositionGridPane, 2, 1);
 
     lScrollPane.setContent(lImagesGridPane);
 
@@ -348,27 +410,6 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
 
                 }
 
-                info("lTopOverlapInterval image "
-                     + lTopOverlapInterval.max(0)
-                     + "/"
-                     + lTopOverlapInterval.max(1));
-                info("lBottomOverlapInterval image "
-                     + lBottomOverlapInterval.max(0)
-                     + "/"
-                     + lBottomOverlapInterval.max(1));
-                info("lLeftOverlapInterval image "
-                     + lLeftOverlapInterval.max(0)
-                     + "/"
-                     + lLeftOverlapInterval.max(1));
-                info("lRightOverlapInterval image "
-                     + lRightOverlapInterval.max(0)
-                     + "/"
-                     + lRightOverlapInterval.max(1));
-
-                info("lTopOverlapInterval a image "
-                     + lTopOverlapInterval.max(0)
-                     + "/"
-                     + lTopOverlapInterval.max(1));
 
                 cachedRefreshDualChannelImagePane(mTopImagePane,
                                                   mCalibrationImagerDevice
@@ -382,10 +423,6 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                                                               .get(),
                                                           2),
                                                   lTopOverlapInterval);
-                info("lTopOverlapInterval b image "
-                     + lTopOverlapInterval.max(0)
-                     + "/"
-                     + lTopOverlapInterval.max(1));
 
                 cachedRefreshDualChannelImagePane(mBottomImagePane,
                                                   mCalibrationImagerDevice
@@ -431,6 +468,13 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
           }));
       mTimeline.setCycleCount(Animation.INDEFINITE);
       mTimeline.play();
+
+      if (mInterpolatedAcquisitionVariable.get()) {
+        mCalibrationImagerDevice.setInterpolatedAcquisitionState(mInterpolatedAcqusitionState);
+      } else {
+        mCalibrationImagerDevice.setInterpolatedAcquisitionState(null);
+      }
+
       mCalibrationImagerDevice.setZVariable(mZVariable);
       mCalibrationImagerDevice.startTask();
     }
@@ -460,11 +504,6 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
       mCache1.put(pImagePane, pRAI1);
       mCache2.put(pImagePane, pRAI2);
 
-      info("pInterval image "
-           + pInterval.max(0)
-           + "/"
-           + pInterval.max(1));
-
       RandomAccessibleInterval<UnsignedShortType>
           lCroppedRAI1 =
           pRAI1;
@@ -474,11 +513,6 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
           || pRAI1.max(1) != pInterval.max(1))
       {
         lCroppedRAI1 = Views.interval(pRAI1, pInterval);
-
-        info("lCroppedRAI1 image "
-             + lCroppedRAI1.max(0)
-             + "/"
-             + lCroppedRAI1.max(1));
       }
       RandomAccessibleInterval<UnsignedShortType>
           lCroppedRAI2 =
@@ -489,21 +523,11 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
           || pRAI2.max(1) != pInterval.max(1))
       {
         lCroppedRAI2 = Views.interval(pRAI2, pInterval);
-        info("lCroppedRAI2 image "
-             + lCroppedRAI2.max(0)
-             + "/"
-             + lCroppedRAI2.max(1));
-
       }
 
       RandomAccessibleInterval<UnsignedShortType>
           lDualChannelImage =
           Views.concatenate(2, lCroppedRAI1, lCroppedRAI2);
-
-      info("Dualchannel image "
-           + lDualChannelImage.max(0)
-           + "/"
-           + lDualChannelImage.max(1));
 
       pImagePane.setImage(new RGBImgImage<UnsignedShortType>(
           lDualChannelImage));

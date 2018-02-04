@@ -1,8 +1,10 @@
 package clearcontrol.microscope.lightsheet.imaging;
 
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.component.lightsheet.si.BinaryStructuredIlluminationPattern;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.imglib2.StackToImgConverter;
 import ij.ImagePlus;
@@ -18,7 +20,7 @@ import java.util.concurrent.TimeoutException;
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
-public class DirectImage
+public class DirectImage implements LoggingFeature
 {
   // input
   LightSheetMicroscope mLightSheetMicroscope;
@@ -51,6 +53,11 @@ public class DirectImage
     lQueue.clearQueue();
     // lQueue.zero();
 
+    if (mInterpolatedAcquisitionState != null) {
+      mInterpolatedAcquisitionState.applyAcquisitionStateAtZ(lQueue, mAcquisitionZ);
+      info("Imaging at I " + lQueue.getIZ(mLightSheetIndex)  + " instead of " + mIlluminationZ );
+    }
+
     lQueue.setFullROI();
     lQueue.setCenteredROI(mImageWidth, mImageHeight);
 
@@ -74,15 +81,20 @@ public class DirectImage
                        new BinaryStructuredIlluminationPattern());
  */
 
+    //if (mInterpolatedAcquisitionState == null)
+    //{
     lQueue.setDZ(mDetectionArmIndex, mDetectionZ);
+    //}
     lQueue.setC(mDetectionArmIndex, false);
 
     lQueue.addCurrentStateToQueue();
 
     // acquire the actual image
+    if (mInterpolatedAcquisitionState == null)
+    {
+      lQueue.setIZ(mLightSheetIndex, mIlluminationZ);
+    }
     lQueue.setDZ(mDetectionArmIndex, mDetectionZ);
-
-    lQueue.setIZ(mLightSheetIndex, mIlluminationZ);
 
     lQueue.setC(mDetectionArmIndex, true);
     lQueue.addCurrentStateToQueue();
@@ -151,6 +163,7 @@ public class DirectImage
 
   public void setIlluminationZ(double pIlluminationZ) {
     invalidate();
+    mInterpolatedAcquisitionState = null;
     mIlluminationZ = pIlluminationZ;
   }
   public void setDetectionZ(double pDetectionZ) {
@@ -177,5 +190,17 @@ public class DirectImage
 
   public void setImageWidth(int pImageWidth) {
     this.mImageWidth = pImageWidth;
+  }
+
+  InterpolatedAcquisitionState mInterpolatedAcquisitionState;
+  Double mAcquisitionZ;
+
+  public void applyInterpolatedAcquisitionState(
+      InterpolatedAcquisitionState pInterpolatedAcquisitionState,
+      Double pAcquisitionZ)
+  {
+    invalidate();
+    mInterpolatedAcquisitionState = pInterpolatedAcquisitionState;
+    mAcquisitionZ = pAcquisitionZ;
   }
 }

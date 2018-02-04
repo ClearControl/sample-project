@@ -179,4 +179,19 @@ public class CopilotDevice extends VirtualDevice
     lCalibrationEngine.getCalibrateWPVariable().set(false);
     lCalibrationEngine.startTask();
   }
+
+
+  public void startCalibrationWithSample()
+  {
+    CalibrationEngine lCalibrationEngine = getXWingMicroscope().getDevice(CalibrationEngine.class, 0);
+    lCalibrationEngine.getCalibrateZVariable().set(false);
+    lCalibrationEngine.getCalibrateZWithSampleVariable().set(false);
+    lCalibrationEngine.getCalibrateAVariable().set(false);
+    lCalibrationEngine.getCalibrateWVariable().set(false);
+    lCalibrationEngine.getCalibrateXYVariable().set(false);
+    lCalibrationEngine.getCalibrateHPVariable().set(false);
+    lCalibrationEngine.getCalibratePVariable().set(true);
+    lCalibrationEngine.getCalibrateWPVariable().set(false);
+    lCalibrationEngine.startTask();
+  }
 }

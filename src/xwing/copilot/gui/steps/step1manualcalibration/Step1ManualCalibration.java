@@ -13,6 +13,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -48,6 +49,8 @@ public class Step1ManualCalibration extends CustomGridPane implements
 
   public Step1ManualCalibration(CopilotDevice pCopilotDevice)
   {
+    setAlignment(Pos.TOP_LEFT);
+
     int lRow = 0;
     mCopilotDevice = pCopilotDevice;
 
@@ -64,18 +67,15 @@ public class Step1ManualCalibration extends CustomGridPane implements
 
     // turn laser on
     {
-      LaserIcon lLaserIcon = new LaserIcon(75, 75);
-      add(lLaserIcon, 0, lRow, 1, 3);
-      //lRow++;
-
       Button lLaserOnButton = new Button("Turn laser on");
+      lLaserOnButton.setGraphic(new LaserIcon(25, 25));
       lLaserOnButton.setOnAction((a) -> {
         mCopilotDevice.calibrationLaserOn();
       });
       add(lLaserOnButton, 1, lRow);
 
       Button lLaserOffButton = new Button("Turn all lasers off");
-      lLaserOffButton.setClip(new LaserIcon(25, 25));
+      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
         mCopilotDevice.allLasersOff();
       });
@@ -201,21 +201,22 @@ public class Step1ManualCalibration extends CustomGridPane implements
     }
 
     {
-      Button lLaserOffButton = new Button("Turn laser off");
+      Button lLaserOffButton = new Button("Turn all lasers off");
+      lLaserOffButton.setGraphic(new LaserIcon(25, 25));
       lLaserOffButton.setOnAction((a) -> {
-        mCopilotDevice.calibrationLaserOff();
+        mCopilotDevice.allLasersOff();
       });
       add(lLaserOffButton, 1, lRow);
       lRow++;
 
-      Button lLaserFullPowerButton = new Button("Laser zero power");
+      Button lLaserFullPowerButton = new Button("Calibration laser zero power");
       lLaserFullPowerButton.setOnAction((a) -> {
         mCopilotDevice.calibrationLaserZeroPower();
       });
       add(lLaserFullPowerButton, 1, lRow);
       lRow++;
 
-      Button lLightSheetHeightZeroButton = new Button("All light sheets height = 0");
+      Button lLightSheetHeightZeroButton = new Button("All light sheets to full height");
       lLightSheetHeightZeroButton.setOnAction((a) -> {
         mCopilotDevice.allLightSheetsFullHeight();
       });
@@ -236,30 +237,16 @@ public class Step1ManualCalibration extends CustomGridPane implements
       mCalibrationImagerDevice.stopTask();
     } else {
       mTimeline = new Timeline(new KeyFrame(Duration.millis(500), (ae) -> {
-            if (mCalibrationImagerDevice.getImageC0L01() != null)
-            {
-              mC0L01ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
-                  mCalibrationImagerDevice.getImageC0L01()));
-            }
-            if (mCalibrationImagerDevice.getImageC0L23() != null)
-            {
-              mC0L23ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
-                  mCalibrationImagerDevice.getImageC0L23()));
-            }
-            if (mCalibrationImagerDevice.getImageC1L01() != null)
-            {
-              mC1L01ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
-                  mCalibrationImagerDevice.getImageC1L01()));
-            }
-            if (mCalibrationImagerDevice.getImageC1L23() != null)
-            {
-              mC1L23ImagePane.setImage(new RGBImgImage<UnsignedShortType>(
-                  mCalibrationImagerDevice.getImageC1L23()));
-            }
+        cachedImagePaneRefresh(mC0L01ImagePane, mCalibrationImagerDevice.getImageC0L01());
+        cachedImagePaneRefresh(mC0L23ImagePane, mCalibrationImagerDevice.getImageC0L23());
+        cachedImagePaneRefresh(mC1L01ImagePane, mCalibrationImagerDevice.getImageC1L01());
+        cachedImagePaneRefresh(mC1L23ImagePane, mCalibrationImagerDevice.getImageC1L23());
+
       }));
       mTimeline.setCycleCount(Animation.INDEFINITE);
       mTimeline.play();
 
+      mCalibrationImagerDevice.setInterpolatedAcquisitionState(null);
       mCalibrationImagerDevice.setZVariable(lZVariable);
       mCalibrationImagerDevice.startTask();
     }

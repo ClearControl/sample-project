@@ -3,14 +3,14 @@ package clearcontrol.devices.stages.kcube.sim;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
-import clearcontrol.devices.stages.BasicThreeAxisStageInterface;
+import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * January 2018
  */
 public class SimulatedThreeAxesStageDevice extends VirtualDevice implements
-                                                                 BasicThreeAxisStageInterface,
+                                                                 BasicThreeAxesStageInterface,
                                                                  LoggingFeature
 {
   Variable<Double> mPositionX = new Variable<Double>("X", 0.0);

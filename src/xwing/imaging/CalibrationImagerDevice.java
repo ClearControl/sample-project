@@ -4,6 +4,7 @@ import clearcontrol.core.device.task.PeriodicLoopTaskDevice;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.microscope.lightsheet.imaging.DirectImage;
+import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.scripting.engine.ScriptingEngine;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -28,6 +29,8 @@ public class CalibrationImagerDevice extends PeriodicLoopTaskDevice implements
 
   XWingMicroscope mXWingMicroscope;
   Variable<Double> mZVariable;
+
+  InterpolatedAcquisitionState mInterpolatedAcquisitionState;
 
   private int mImageSize = 2048;
 
@@ -81,8 +84,12 @@ public class CalibrationImagerDevice extends PeriodicLoopTaskDevice implements
          + pLightSheetIndex1
          + pLightSheetIndex2);
     DirectImage lDirectImage = new DirectImage(mXWingMicroscope);
+    if (mInterpolatedAcquisitionState != null) {
+      lDirectImage.applyInterpolatedAcquisitionState(mInterpolatedAcquisitionState, mZVariable.get());
+    } else {
+      lDirectImage.setIlluminationZ(mZVariable.get());
+    }
     lDirectImage.setDetectionZ(mZVariable.get());
-    lDirectImage.setIlluminationZ(mZVariable.get());
     lDirectImage.setDetectionArmIndex(pDetectionArmIndex);
     lDirectImage.setLightSheetIndex(pLightSheetIndex1);
     lDirectImage.setImageHeight(mImageSize);
@@ -164,6 +171,10 @@ public class CalibrationImagerDevice extends PeriodicLoopTaskDevice implements
   {
     return ScriptingEngine.isCancelRequestedStatic()
            || getStopSignalVariable().get();
+  }
+
+  public void setInterpolatedAcquisitionState(InterpolatedAcquisitionState pInterpolatedAcquisitionState) {
+    mInterpolatedAcquisitionState = pInterpolatedAcquisitionState;
   }
 
 }

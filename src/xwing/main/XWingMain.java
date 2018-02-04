@@ -175,7 +175,7 @@ public class XWingMain extends Application implements LoggingFeature
   {
     int lMaxStackProcessingQueueLength = 32;
     int lThreadPoolSize = 1;
-    int lNumberOfControlPlanes = 7;
+    int lNumberOfControlPlanes = 8;
 
 
     try (

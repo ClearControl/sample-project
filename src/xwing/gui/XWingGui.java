@@ -1,6 +1,6 @@
 package xwing.gui;
 
-import clearcontrol.devices.stages.BasicThreeAxisStageInterface;
+import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
 import clearcontrol.devices.stages.kcube.gui.BasicThreeAxesStagePanel;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
@@ -49,7 +49,7 @@ public class XWingGui extends LightSheetMicroscopeGUI
                          KCubePane.class,
                          MicroscopeNodeType.Stage);
 
-    addPanelMappingEntry(BasicThreeAxisStageInterface.class,
+    addPanelMappingEntry(BasicThreeAxesStageInterface.class,
                          BasicThreeAxesStagePanel.class,
                          MicroscopeNodeType.Stage);
 

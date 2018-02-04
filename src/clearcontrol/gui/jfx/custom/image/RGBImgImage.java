@@ -73,9 +73,12 @@ public class RGBImgImage<T extends RealType<T>> extends WritableImage implements
 
     long[] position = new long[2];
 
-    for (position[0] = 0; position[0] < lWidth; position[0]++ ){
-      for (position[1] = 0; position[1] < lHeight; position[1]++ )
+    for (int x = 0; x < lWidth; x++ ){
+      position[0] = pRAI.min(0) + x;
+      for (int y = 0; y < lHeight; y++ )
       {
+        position[1] = pRAI.min(1) + y;
+
         lRedRA.setPosition(position);
 
         lRed = (lRedRA.get().getRealDouble() - lMin) / lRange;
@@ -107,7 +110,7 @@ public class RGBImgImage<T extends RealType<T>> extends WritableImage implements
           lBlue = 1;
         }
         Color color = new Color(lRed, lGreen, lBlue, lOpacity);
-        lPixelWriter.setColor((int)position[0], (int)position[1], color);
+        lPixelWriter.setColor(x, y, color);
       }
     }
   }

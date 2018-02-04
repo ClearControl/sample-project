@@ -1,7 +1,7 @@
 package clearcontrol.devices.stages.kcube.gui;
 
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.devices.stages.BasicThreeAxisStageInterface;
+import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import javafx.event.ActionEvent;
@@ -16,7 +16,7 @@ import javafx.scene.control.Label;
  */
 public class BasicThreeAxesStagePanel extends CustomGridPane
 {
-  private BasicThreeAxisStageInterface mBasicThreeAxisStageInterface;
+  private BasicThreeAxesStageInterface mBasicThreeAxesStageInterface;
 
   private BoundedVariable<Double>
       mSlowSpeed =
@@ -33,9 +33,9 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
                                   Double.MAX_VALUE,
                                   0.001);
 
-  public BasicThreeAxesStagePanel(BasicThreeAxisStageInterface pBasicThreeAxisStageInterface)
+  public BasicThreeAxesStagePanel(BasicThreeAxesStageInterface pBasicThreeAxesStageInterface)
   {
-    mBasicThreeAxisStageInterface = pBasicThreeAxisStageInterface;
+    mBasicThreeAxesStageInterface = pBasicThreeAxesStageInterface;
 
     // ---------------------------------------------------------------
     // X
@@ -51,7 +51,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveXBy(-mFastSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveXBy(-mFastSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -66,7 +66,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveXBy(-mSlowSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveXBy(-mSlowSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -81,7 +81,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveXBy(mSlowSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveXBy(mSlowSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -95,7 +95,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveXBy(mFastSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveXBy(mFastSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -112,7 +112,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveYBy(-mFastSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveYBy(-mFastSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -126,7 +126,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveYBy(-mSlowSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveYBy(-mSlowSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -141,7 +141,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveYBy(mSlowSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveYBy(mSlowSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -156,7 +156,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveYBy(mFastSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveYBy(mFastSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -177,7 +177,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveZBy(-mFastSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveZBy(-mFastSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -192,7 +192,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveZBy(-mSlowSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveZBy(-mSlowSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -207,7 +207,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveZBy(mSlowSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveZBy(mSlowSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -221,7 +221,7 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
         @Override public void handle(ActionEvent event)
         {
           enableAllButtons(false);
-          mBasicThreeAxisStageInterface.moveZBy(mFastSpeed.get(), true);
+          mBasicThreeAxesStageInterface.moveZBy(mFastSpeed.get(), true);
           enableAllButtons(true);
         }
       });
@@ -236,7 +236,8 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
       add(lLabel, lDescriptionColumn, lRow);
       NumberVariableTextField<Double>
           lTextField =
-          new NumberVariableTextField<Double>("", mBasicThreeAxisStageInterface.getXPositionVariable(), Double.MIN_VALUE, Double.MAX_VALUE, 0.0000001);
+          new NumberVariableTextField<Double>("", mBasicThreeAxesStageInterface
+              .getXPositionVariable(), Double.MIN_VALUE, Double.MAX_VALUE, 0.0000001);
       add(lTextField, lFieldColumn, lRow);
       lRow++;
     }
@@ -245,7 +246,8 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
       add(lLabel, lDescriptionColumn, lRow);
       NumberVariableTextField<Double>
           lTextField =
-          new NumberVariableTextField<Double>("", mBasicThreeAxisStageInterface.getYPositionVariable(), Double.MIN_VALUE, Double.MAX_VALUE, 0.0000001);
+          new NumberVariableTextField<Double>("", mBasicThreeAxesStageInterface
+              .getYPositionVariable(), Double.MIN_VALUE, Double.MAX_VALUE, 0.0000001);
       add(lTextField, lFieldColumn, lRow);
       lRow++;
     }
@@ -254,7 +256,8 @@ public class BasicThreeAxesStagePanel extends CustomGridPane
       add(lLabel, lDescriptionColumn, lRow);
       NumberVariableTextField<Double>
           lTextField =
-          new NumberVariableTextField<Double>("", mBasicThreeAxisStageInterface.getZPositionVariable(), Double.MIN_VALUE, Double.MAX_VALUE, 0.0000001);
+          new NumberVariableTextField<Double>("", mBasicThreeAxesStageInterface
+              .getZPositionVariable(), Double.MIN_VALUE, Double.MAX_VALUE, 0.0000001);
       add(lTextField, lFieldColumn, lRow);
       lRow++;
     }

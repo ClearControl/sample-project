@@ -1,6 +1,7 @@
 package xwing.copilot.gui;
 
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -23,6 +24,10 @@ public class CopilotDevicePanel extends CustomGridPane
 
   public CopilotDevicePanel(CopilotDevice pCopilotDevice)
   {
+    setAlignment(Pos.TOP_LEFT);
+    setGap(0);
+    setPadding(0);
+
     mCopilotDevice = pCopilotDevice;
     mXWingMicroscope = pCopilotDevice.getXWingMicroscope();
     mStepFactoryInterfaceList = pCopilotDevice.getStepFactoryInterfaceList();
@@ -36,6 +41,7 @@ public class CopilotDevicePanel extends CustomGridPane
     int lRow = 0;
     {
       TabPane lTabPane = new TabPane();
+      lTabPane.setMaxWidth(Double.MAX_VALUE);
       add(lTabPane, 0, lRow, 4, 1);
 
       ArrayList<StepFactoryInterface>
@@ -46,6 +52,7 @@ public class CopilotDevicePanel extends CustomGridPane
         // Single zernike editor
         Tab lStepTab = new Tab(lStepFactoryInterface.getName());
         Node lNode = lStepFactoryInterface.getStep(mCopilotDevice);
+
         lStepTab.setContent(lNode);
         lTabPane.getTabs().add(lStepTab);
       }
