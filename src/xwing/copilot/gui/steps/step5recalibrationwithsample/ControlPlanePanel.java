@@ -5,9 +5,9 @@ import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import clearcontrol.microscope.lightsheet.LightSheetDOF;
-import clearcontrol.microscope.lightsheet.adaptive.controlplanestate.gui.ControlPlaneStatePanel;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import javafx.geometry.Insets;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,6 +24,9 @@ public class ControlPlanePanel extends CustomGridPane
   int mRow = 0;
   int mPanelWidth = 60;
 
+  Button mCopyToImageJButton;
+
+
   public ControlPlanePanel(InterpolatedAcquisitionState pInterpolatedAcquisitionState, Variable<Integer> pControlPlaneIndexVariable, int pLightSheetIndex) {
     mInterpolatedAcquisitionState = pInterpolatedAcquisitionState;
     mControlPlaneIndex = pControlPlaneIndexVariable.get();
@@ -37,6 +40,11 @@ public class ControlPlanePanel extends CustomGridPane
 
     addDOFButtons(LightSheetDOF.IZ, pControlPlaneIndexVariable, pLightSheetIndex, lDeltaZ);
     addDOFButtons(LightSheetDOF.IA, pControlPlaneIndexVariable, pLightSheetIndex, lDeltaA);
+
+    mCopyToImageJButton = new Button("I");
+    mCopyToImageJButton.setMaxWidth(mPanelWidth);
+    add(mCopyToImageJButton, 0, mRow);
+    mRow++;
 
     this.setGap(0);
     this.setMaxWidth(mPanelWidth);
@@ -105,5 +113,10 @@ public class ControlPlanePanel extends CustomGridPane
     add(new Label(" "), 0, mRow);
     mRow++;
 
+  }
+
+  public void setOpenExternallyAction(EventHandler<ActionEvent> pOpenExternallyAction)
+  {
+    mCopyToImageJButton.setOnAction(pOpenExternallyAction);
   }
 }
