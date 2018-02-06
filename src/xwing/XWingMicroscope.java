@@ -9,11 +9,13 @@ import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
+import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
 import clearcontrol.devices.stages.hub.StageHubDevice;
 import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
 import clearcontrol.devices.stages.kcube.impl.KCubeThreeAxesStageDevice;
+import clearcontrol.devices.stages.kcube.scheduler.BasicThreeAxesStageScheduler;
 import clearcontrol.devices.stages.kcube.sim.SimulatedThreeAxesStageDevice;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
@@ -88,7 +90,12 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, lXStage);
       addDevice(0, lYStage);
       addDevice(0, lZStage);
-      addDevice(0, new KCubeThreeAxesStageDevice("Stage", lXStage, lYStage, lZStage));
+
+      BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new KCubeThreeAxesStageDevice("Stage", lXStage, lYStage, lZStage);
+      addDevice(0, lBasicThreeAxesStageInterface);
+
+      BasicThreeAxesStageScheduler lBasicThreeAxesStageScheduler = new BasicThreeAxesStageScheduler(lBasicThreeAxesStageInterface);
+      addDevice(0, lBasicThreeAxesStageScheduler);
 
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "I0B")); // XWing LS0 beta angle
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "I1B")); // XWing LS1 beta angle
@@ -98,16 +105,6 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
 
     }
 
-    // setup adaptators
-    {
-      AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
-      addDevice(0, lAdaptiveZScheduler);
-    }
-
-    {
-      MultiChannelScheduler lMultiChannelScheduler = new MultiChannelScheduler();
-      addDevice(0, lMultiChannelScheduler);
-    }
 
 
 
@@ -258,20 +255,39 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       //addDevice(0, lKCubeDeviceFactory);
       //addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
 
-      addDevice(0, new SimulatedThreeAxesStageDevice());
+      BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new SimulatedThreeAxesStageDevice();
+
+      addDevice(0, lBasicThreeAxesStageInterface);
+
+      BasicThreeAxesStageScheduler lBasicThreeAxesStageScheduler = new BasicThreeAxesStageScheduler(lBasicThreeAxesStageInterface);
+      addDevice(0, lBasicThreeAxesStageScheduler);
+
+
     }
 
     // setup adaptators
-    {
-      AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
-      addDevice(0, lAdaptiveZScheduler);
-    }
+    //{
+    //  AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
+    //  addDevice(0, lAdaptiveZScheduler);
+    //}
 
   }
 
   @Override
   public void addStandardDevices(int pNumberOfControlPlanes) {
     super.addStandardDevices(pNumberOfControlPlanes);
+
+
+    // setup adaptators/schedulers
+    {
+      AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
+      addDevice(0, lAdaptiveZScheduler);
+    }
+
+    {
+      MultiChannelScheduler lMultiChannelScheduler = new MultiChannelScheduler();
+      addDevice(0, lMultiChannelScheduler);
+    }
 
     // initialize copilot
     {

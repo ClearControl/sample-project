@@ -2,6 +2,8 @@ package xwing.gui;
 
 import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
 import clearcontrol.devices.stages.kcube.gui.BasicThreeAxesStagePanel;
+import clearcontrol.devices.stages.kcube.scheduler.BasicThreeAxesStageScheduler;
+import clearcontrol.devices.stages.kcube.scheduler.gui.BasicThreeAxesStageSchedulerPanel;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
@@ -56,6 +58,10 @@ public class XWingGui extends LightSheetMicroscopeGUI
     addPanelMappingEntry(AdaptiveZScheduler.class,
                          AdaptiveZSchedulerPanel.class,
                          MicroscopeNodeType.AdaptiveOptics);
+
+    addPanelMappingEntry(BasicThreeAxesStageScheduler.class,
+                         BasicThreeAxesStageSchedulerPanel.class,
+                         MicroscopeNodeType.Stage);
 
     addPanelMappingEntry(CopilotDevice.class, CopilotDevicePanel.class, MicroscopeNodeType.Other);
 
