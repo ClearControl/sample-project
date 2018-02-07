@@ -14,6 +14,8 @@ import xwing.adaptive.AdaptiveZScheduler;
 import xwing.adaptive.gui.AdaptiveZSchedulerPanel;
 import xwing.copilot.CopilotDevice;
 import xwing.copilot.gui.CopilotDevicePanel;
+import xwing.fastimage.FastImageDevice;
+import xwing.fastimage.gui.FastImageDevicePanel;
 
 /**
  * XWing microscope GUI
@@ -62,6 +64,8 @@ public class XWingGui extends LightSheetMicroscopeGUI
     addPanelMappingEntry(BasicThreeAxesStageScheduler.class,
                          BasicThreeAxesStageSchedulerPanel.class,
                          MicroscopeNodeType.Stage);
+
+    addPanelMappingEntry(FastImageDevice.class, FastImageDevicePanel.class, MicroscopeNodeType.Acquisition);
 
     addPanelMappingEntry(CopilotDevice.class, CopilotDevicePanel.class, MicroscopeNodeType.Other);
 

@@ -32,6 +32,7 @@ import xwing.copilot.gui.steps.step2automaticcalibration.Step2AutomaticCalibrati
 import xwing.copilot.gui.steps.step3samplemounting.Step3SampleMountingFactory;
 import xwing.copilot.gui.steps.step4automaticcalibrationwithsample.Step4AutomaticCalibrationWithSampleFactory;
 import xwing.copilot.gui.steps.step5recalibrationwithsample.Step5RecalibrationWithSampleFactory;
+import xwing.fastimage.FastImageDevice;
 import xwing.imaging.CalibrationImagerDevice;
 import xwing.multicolor.MultiChannelScheduler;
 
@@ -306,6 +307,7 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, new CopilotDevice(this, lCopilotStepList));
     }
 
+    addDevice(0, new FastImageDevice(this));
   }
 
 }
