@@ -355,7 +355,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                               mControlPlaneIndexVariable,
                               mTopLeftLightSheet);
     lTopLeftPanel.setOpenExternallyAction((a)->{
-      showImageJ();
+      pCopilotDevice.showImageJ();
       ImageJFunctions.wrap(mCalibrationImagerDevice
                                .getImage(
                                    mCameraChoice
@@ -369,7 +369,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                               mControlPlaneIndexVariable,
                               mBottomLeftLightSheet);
     lBottomLeftPanel.setOpenExternallyAction((a)->{
-      showImageJ();
+      pCopilotDevice.showImageJ();
       ImageJFunctions.wrap(mCalibrationImagerDevice
                                .getImage(
                                    mCameraChoice
@@ -383,7 +383,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                               mControlPlaneIndexVariable,
                               mTopRightLightSheet);
     lTopRightPanel.setOpenExternallyAction((a)->{
-      showImageJ();
+      pCopilotDevice.showImageJ();
       ImageJFunctions.wrap(mCalibrationImagerDevice
                                .getImage(
                                    mCameraChoice
@@ -397,7 +397,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                               mControlPlaneIndexVariable,
                               mBottomRightightSheet);
     lBottomRightPanel.setOpenExternallyAction((a)->{
-      showImageJ();
+      pCopilotDevice.showImageJ();
       ImageJFunctions.wrap(mCalibrationImagerDevice
                              .getImage(
                                  mCameraChoice
@@ -629,14 +629,6 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
       pImagePane.setImage(new RGBImgImage<UnsignedShortType>(
           lDualChannelImage));
     }
-  }
-
-  private static ImageJ sImageJ ;
-  private void showImageJ() {
-    if (sImageJ == null)
-      sImageJ = new ImageJ();
-    if (!sImageJ.isVisible())
-      sImageJ.setVisible(true);
   }
 
 }

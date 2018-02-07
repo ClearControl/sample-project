@@ -3,11 +3,13 @@ package xwing.copilot;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.devices.imagej.ImageJFeature;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.microscope.lightsheet.calibrator.CalibrationEngine;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArmInterface;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheetInterface;
+import ij.ImageJ;
 import xwing.XWingMicroscope;
 import xwing.copilot.gui.steps.StepFactoryInterface;
 import xwing.main.XWingMain;
@@ -19,7 +21,8 @@ import java.util.List;
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
-public class CopilotDevice extends VirtualDevice
+public class CopilotDevice extends VirtualDevice implements
+                                                 ImageJFeature
 {
   XWingMicroscope mXWingMicroscope;
   ArrayList<StepFactoryInterface> mStepFactoryInterfaceList;
@@ -194,4 +197,5 @@ public class CopilotDevice extends VirtualDevice
     lCalibrationEngine.getCalibrateWPVariable().set(false);
     lCalibrationEngine.startTask();
   }
+
 }
