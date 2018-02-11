@@ -41,14 +41,41 @@ public class BasicThreeAxesStageScheduler extends SchedulerBase implements
 
   @Override public boolean doExperiment(long pTimePoint)
   {
-    double stepDistanceX = (mStopXVariable.get() - mStartXVariable.get()) / (mNumberOfStepsVariable.get() - 1);
-    double stepDistanceY = (mStopYVariable.get() - mStartYVariable.get()) / (mNumberOfStepsVariable.get() - 1);
-    double stepDistanceZ = (mStopZVariable.get() - mStartZVariable.get()) / (mNumberOfStepsVariable.get() - 1);
+    if (pTimePoint == 0) {
+      info("Go to start position");
+      double
+          stepDistanceX = mStartXVariable.get() - mBasicThreeAxesStageInterface.getXPositionVariable().get();
+      double
+          stepDistanceY = mStartYVariable.get() - mBasicThreeAxesStageInterface.getYPositionVariable().get();
+      double
+          stepDistanceZ = mStartZVariable.get() - mBasicThreeAxesStageInterface.getZPositionVariable().get();
 
-    mBasicThreeAxesStageInterface.moveXBy(stepDistanceX, true);
-    mBasicThreeAxesStageInterface.moveYBy(stepDistanceY, true);
-    mBasicThreeAxesStageInterface.moveZBy(stepDistanceZ, true);
+      mBasicThreeAxesStageInterface.moveXBy(stepDistanceX, true);
+      mBasicThreeAxesStageInterface.moveYBy(stepDistanceY, true);
+      mBasicThreeAxesStageInterface.moveZBy(stepDistanceZ, true);
+    } else
+    {
 
+      double
+          stepDistanceX =
+          (mStopXVariable.get() - mStartXVariable.get()) / (
+              mNumberOfStepsVariable.get()
+              - 1);
+      double
+          stepDistanceY =
+          (mStopYVariable.get() - mStartYVariable.get()) / (
+              mNumberOfStepsVariable.get()
+              - 1);
+      double
+          stepDistanceZ =
+          (mStopZVariable.get() - mStartZVariable.get()) / (
+              mNumberOfStepsVariable.get()
+              - 1);
+
+      mBasicThreeAxesStageInterface.moveXBy(stepDistanceX, true);
+      mBasicThreeAxesStageInterface.moveYBy(stepDistanceY, true);
+      mBasicThreeAxesStageInterface.moveZBy(stepDistanceZ, true);
+    }
     return true;
   }
 
