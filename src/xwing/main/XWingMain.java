@@ -36,15 +36,30 @@ import xwing.gui.XWingGui;
 public class XWingMain extends Application implements LoggingFeature
 {
   static XWingMain instance = null;
+  private boolean headless = false;
 
+  public ClearCL getClearCL()
+  {
+    return mClearCL;
+  }
 
+  private ClearCL mClearCL;
 
   public static XWingMain getInstance()
   {
-    if (instance == null) {
+    if (instance == null)
+    {
       launch();
     }
     return instance;
+  }
+
+  public XWingMain() {
+    super();
+  }
+
+  public XWingMain(boolean headless) {
+    headless = true;
   }
 
   private LightSheetMicroscope mLightSheetMicroscope;
@@ -57,24 +72,30 @@ public class XWingMain extends Application implements LoggingFeature
   private static Alert sAlert;
   private static Optional<ButtonType> sResult;
 
-  static final MachineConfiguration sMachineConfiguration =
-                                                          MachineConfiguration.get();
+  static final MachineConfiguration
+      sMachineConfiguration =
+      MachineConfiguration.get();
 
   public static void main(String[] args)
   {
     launch(args);
   }
 
-  @Override
-  public void start(Stage pPrimaryStage)
+  @Override public void start(Stage pPrimaryStage)
   {
     instance = this;
+    if (headless) {
+      return;
+    }
+
     boolean l2DDisplay = true;
     boolean l3DDisplay = true;
 
     BorderPane lPane = new BorderPane();
-    ImageView lImageView =
-                         new ImageView(new Image(XWingMicroscope.class.getResourceAsStream("icon/xwing.png")));
+    ImageView
+        lImageView =
+        new ImageView(new Image(XWingMicroscope.class.getResourceAsStream(
+            "icon/xwing.png")));
 
     lImageView.fitWidthProperty().bind(pPrimaryStage.widthProperty());
     lImageView.fitHeightProperty().bind(pPrimaryStage.heightProperty());
@@ -97,21 +118,21 @@ public class XWingMain extends Application implements LoggingFeature
 
     sAlert.setTitle("Dialog");
     sAlert.setHeaderText("Simulation or Real ?");
-    sAlert.setContentText("Choose whether you want to start in real or simulation mode");
+    sAlert.setContentText(
+        "Choose whether you want to start in real or simulation mode");
 
-    sAlert.getButtonTypes().setAll(lButtonReal,
-                                   lButtonRealWithOutStages,
-                                   lButtonSimulation,
-                                   lButtonCancel);
+    sAlert.getButtonTypes()
+          .setAll(lButtonReal,
+                  lButtonRealWithOutStages,
+                  lButtonSimulation,
+                  lButtonCancel);
 
     Platform.runLater(() -> {
       sResult = sAlert.showAndWait();
       Runnable lRunnable = () -> {
         if (sResult.get() == lButtonSimulation)
         {
-          startXWing(2,
-                     4,
-                     true,
+          startXWing(true,
                      pPrimaryStage,
                      l2DDisplay,
                      l3DDisplay,
@@ -119,18 +140,15 @@ public class XWingMain extends Application implements LoggingFeature
         }
         else if (sResult.get() == lButtonReal)
         {
-          startXWing(2,
-                     4,
-                     false,
+          startXWing(false,
                      pPrimaryStage,
                      l2DDisplay,
                      l3DDisplay,
                      true);
-        } else if (sResult.get() == lButtonRealWithOutStages)
+        }
+        else if (sResult.get() == lButtonRealWithOutStages)
         {
-          startXWing(2,
-                     4,
-                     false,
+          startXWing(false,
                      pPrimaryStage,
                      l2DDisplay,
                      l3DDisplay,
@@ -151,74 +169,68 @@ public class XWingMain extends Application implements LoggingFeature
 
   /**
    * Starts the microscope
-   * 
-   * @param pNumberOfDetectionArms
-   *          number of detection arms to use
-   * @param pNumberOfLightSheets
-   *          number of lightsheets to use
-   * @param pSimulation
-   *          true
-   * @param pPrimaryStage
-   *          JFX primary stage
-   * @param p2DDisplay
-   *          true: use 2D displays
-   * @param p3DDisplay
-   *          true: use 3D displays
+   *
+   * @param pSimulation   true
+   * @param pPrimaryStage JFX primary stage
+   * @param p2DDisplay    true: use 2D displays
+   * @param p3DDisplay    true: use 3D displays
    */
-  public void startXWing(int pNumberOfDetectionArms,
-                         int pNumberOfLightSheets,
-                         boolean pSimulation,
-                         Stage pPrimaryStage,
-                         boolean p2DDisplay,
-                         boolean p3DDisplay,
-                         boolean pUseStages)
+  public XWingMicroscope startXWing(boolean pSimulation,
+                                    Stage pPrimaryStage,
+                                    boolean p2DDisplay,
+                                    boolean p3DDisplay,
+                                    boolean pUseStages)
   {
+    int pNumberOfDetectionArms = 2;
+    int pNumberOfLightSheets = 4;
+
     int lMaxStackProcessingQueueLength = 32;
     int lThreadPoolSize = 1;
     int lNumberOfControlPlanes = 8;
 
-
-    try (
-        ClearCL lClearCL =
-                         new ClearCL(ClearCLBackends.getBestBackend()))
+    try (ClearCL lClearCL = new ClearCL(ClearCLBackends.getBestBackend()))
     {
       for (ClearCLDevice lClearCLDevice : lClearCL.getAllDevices())
         info("OpenCl devices available: %s \n",
              lClearCLDevice.getName());
 
-      ClearCLContext lStackFusionContext = lClearCL
-                                                   .getDeviceByName(sMachineConfiguration.getStringProperty("clearcl.device.fusion",
-                                                                                                            ""))
-                                                   .createContext();
+      ClearCLContext
+          lStackFusionContext =
+          lClearCL.getDeviceByName(sMachineConfiguration.getStringProperty(
+              "clearcl.device.fusion",
+              "")).createContext();
 
       info("Using device %s for stack fusion \n",
            lStackFusionContext.getDevice());
 
-      XWingMicroscope lXWingMicroscope =
-                                       new XWingMicroscope(lStackFusionContext,
-                                                           lMaxStackProcessingQueueLength,
-                                                           lThreadPoolSize);
+      XWingMicroscope
+          lXWingMicroscope =
+          new XWingMicroscope(lStackFusionContext,
+                              lMaxStackProcessingQueueLength,
+                              lThreadPoolSize);
       mLightSheetMicroscope = lXWingMicroscope;
       if (pSimulation)
       {
-        ClearCLContext lSimulationContext = lClearCL
-                                                    .getDeviceByName(sMachineConfiguration.getStringProperty("clearcl.device.simulation",
-                                                                                                             "HD"))
-                                                    .createContext();
+        ClearCLContext
+            lSimulationContext =
+            lClearCL.getDeviceByName(sMachineConfiguration.getStringProperty(
+                "clearcl.device.simulation",
+                "HD")).createContext();
 
         info("Using device %s for simulation (Simbryo) \n",
              lSimulationContext.getDevice());
 
-        LightSheetMicroscopeSimulationDevice lSimulatorDevice =
-                                                              SimulationUtils.getSimulatorDevice(lSimulationContext,
-                                                                                                 2,
-                                                                                                 4,
-                                                                                                 2048,
-                                                                                                 11,
-                                                                                                 320,
-                                                                                                 320,
-                                                                                                 320,
-                                                                                                 false);
+        LightSheetMicroscopeSimulationDevice
+            lSimulatorDevice =
+            SimulationUtils.getSimulatorDevice(lSimulationContext,
+                                               pNumberOfDetectionArms,
+                                               pNumberOfLightSheets,
+                                               2048,
+                                               11,
+                                               320,
+                                               320,
+                                               320,
+                                               false);
 
         lXWingMicroscope.addSimulatedDevices(false,
                                              false,
@@ -228,18 +240,16 @@ public class XWingMain extends Application implements LoggingFeature
       else
       {
         lXWingMicroscope.addRealHardwareDevices(pNumberOfDetectionArms,
-                                                pNumberOfLightSheets, pUseStages);
+                                                pNumberOfLightSheets,
+                                                pUseStages);
       }
       lXWingMicroscope.addStandardDevices(lNumberOfControlPlanes);
 
-
       EDFImagingEngine
-          lDepthOfFocusImagingEngine = new EDFImagingEngine(lStackFusionContext, lXWingMicroscope);
+          lDepthOfFocusImagingEngine =
+          new EDFImagingEngine(lStackFusionContext, lXWingMicroscope);
       lXWingMicroscope.addDevice(0, lDepthOfFocusImagingEngine);
 
-
-
-      XWingGui lXWingGui;
 
       info("Opening microscope devices...");
       if (lXWingMicroscope.open())
@@ -247,29 +257,38 @@ public class XWingMain extends Application implements LoggingFeature
         info("Starting microscope devices...");
         if (lXWingMicroscope.start())
         {
+          if (pPrimaryStage != null)
+          {
+            XWingGui lXWingGui;
 
-          info("Setting up XWing GUI...");
-          lXWingGui = new XWingGui(lXWingMicroscope,
-                                   pPrimaryStage,
-                                   p2DDisplay,
-                                   p3DDisplay);
-          lXWingGui.setup();
-          info("Opening XWing GUI...");
-          lXWingGui.open();
+            info("Setting up XWing GUI...");
+            lXWingGui =
+                new XWingGui(lXWingMicroscope,
+                             pPrimaryStage,
+                             p2DDisplay,
+                             p3DDisplay);
+            lXWingGui.setup();
+            info("Opening XWing GUI...");
+            lXWingGui.open();
 
-          lXWingGui.waitForVisible(true, 1L, TimeUnit.MINUTES);
+            lXWingGui.waitForVisible(true, 1L, TimeUnit.MINUTES);
 
-          lXWingGui.connectGUI();
-          lXWingGui.waitForVisible(false, null, null);
+            lXWingGui.connectGUI();
+            lXWingGui.waitForVisible(false, null, null);
 
-          lXWingGui.disconnectGUI();
-          info("Closing XWing GUI...");
-          lXWingGui.close();
+            lXWingGui.disconnectGUI();
+            info("Closing XWing GUI...");
+            lXWingGui.close();
 
-          info("Stopping microscope devices...");
-          lXWingMicroscope.stop();
-          info("Closing microscope devices...");
-          lXWingMicroscope.close();
+            info("Stopping microscope devices...");
+            lXWingMicroscope.stop();
+            info("Closing microscope devices...");
+            lXWingMicroscope.close();
+          }
+         else {
+            mClearCL = lClearCL;
+            return lXWingMicroscope;
+          }
         }
         else
           severe("Not all microscope devices started!");
@@ -280,7 +299,11 @@ public class XWingMain extends Application implements LoggingFeature
       ThreadSleep.sleep(100, TimeUnit.MILLISECONDS);
     }
 
-    System.exit(0);
+    if (pPrimaryStage != null)
+    {
+      System.exit(0);
+    }
+    return null;
   }
 
 }
