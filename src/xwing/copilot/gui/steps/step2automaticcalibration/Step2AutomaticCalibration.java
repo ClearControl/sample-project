@@ -53,6 +53,7 @@ public class Step2AutomaticCalibration extends CustomGridPane implements
         mCopilotDevice.calibrationLaserOn();
       });
       add(lLaserOnButton, 0, lRow);
+      lRow++;
 
 
       Button lLaserFullPowerButton = new Button("Laser full power");
