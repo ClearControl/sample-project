@@ -1,8 +1,21 @@
 package xwing.gui;
 
+import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
+import clearcontrol.devices.stages.kcube.gui.BasicThreeAxesStagePanel;
+import clearcontrol.devices.stages.kcube.scheduler.BasicThreeAxesStageScheduler;
+import clearcontrol.devices.stages.kcube.scheduler.gui.BasicThreeAxesStageSchedulerPanel;
+import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import javafx.stage.Stage;
+import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
+import clearcontrol.devices.stages.kcube.gui.KCubePane;
+import xwing.adaptive.AdaptiveZScheduler;
+import xwing.adaptive.gui.AdaptiveZSchedulerPanel;
+import xwing.copilot.CopilotDevice;
+import xwing.copilot.gui.CopilotDevicePanel;
+import xwing.fastimage.FastImageDevice;
+import xwing.fastimage.gui.FastImageDevicePanel;
 
 /**
  * XWing microscope GUI
@@ -35,6 +48,27 @@ public class XWingGui extends LightSheetMicroscopeGUI
           p3DDisplay);
     addGroovyScripting("lsm");
     addJythonScripting("lsm");
+
+    addPanelMappingEntry(KCubeDevice.class,
+                         KCubePane.class,
+                         MicroscopeNodeType.Stage);
+
+    addPanelMappingEntry(BasicThreeAxesStageInterface.class,
+                         BasicThreeAxesStagePanel.class,
+                         MicroscopeNodeType.Stage);
+
+    addPanelMappingEntry(AdaptiveZScheduler.class,
+                         AdaptiveZSchedulerPanel.class,
+                         MicroscopeNodeType.AdaptiveOptics);
+
+    addPanelMappingEntry(BasicThreeAxesStageScheduler.class,
+                         BasicThreeAxesStageSchedulerPanel.class,
+                         MicroscopeNodeType.Stage);
+
+    addPanelMappingEntry(FastImageDevice.class, FastImageDevicePanel.class, MicroscopeNodeType.Acquisition);
+
+    addPanelMappingEntry(CopilotDevice.class, CopilotDevicePanel.class, MicroscopeNodeType.Other);
+
   }
 
 }

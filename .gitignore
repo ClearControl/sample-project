@@ -12,3 +12,9 @@ old
 XScope.iml
 executable.xml
 jar-in-jar-loader.zip
+/hasebuild/
+/nulljars/
+/out/
+/resources/
+*.txt
+*.iml

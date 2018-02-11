@@ -1,6 +1,7 @@
 package xwing;
 
 import clearcl.ClearCLContext;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
@@ -8,14 +9,34 @@ import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
+import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
 import clearcontrol.devices.stages.StageType;
 import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
 import clearcontrol.devices.stages.hub.StageHubDevice;
+import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
+import clearcontrol.devices.stages.kcube.impl.KCubeThreeAxesStageDevice;
+import clearcontrol.devices.stages.kcube.scheduler.BasicThreeAxesStageScheduler;
+import clearcontrol.devices.stages.kcube.sim.SimulatedThreeAxesStageDevice;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
+import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
+import clearcontrol.devices.stages.kcube.impl.KCubeDeviceFactory;
+import xwing.adaptive.AdaptiveZScheduler;
+import xwing.copilot.CopilotDevice;
+import xwing.copilot.gui.steps.StepFactoryInterface;
+import xwing.copilot.gui.steps.step1manualcalibration.Step1ManualCalibrationFactory;
+import xwing.copilot.gui.steps.step2automaticcalibration.Step2AutomaticCalibrationFactory;
+import xwing.copilot.gui.steps.step3samplemounting.Step3SampleMountingFactory;
+import xwing.copilot.gui.steps.step4automaticcalibrationwithsample.Step4AutomaticCalibrationWithSampleFactory;
+import xwing.copilot.gui.steps.step5recalibrationwithsample.Step5RecalibrationWithSampleFactory;
+import xwing.fastimage.FastImageDevice;
+import xwing.imaging.CalibrationImagerDevice;
+import xwing.multicolor.MultiChannelScheduler;
+
+import java.util.ArrayList;
 
 /**
  * XWing microscope
@@ -43,6 +64,7 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
           pStackFusionContext,
           pMaxStackProcessingQueueLength,
           pThreadPoolSize);
+
   }
 
   /**
@@ -54,10 +76,38 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
    *          number of lightsheets
    */
   public void addRealHardwareDevices(int pNumberOfDetectionArms,
-                                     int pNumberOfLightSheets)
+                                     int pNumberOfLightSheets, boolean pUseStages)
   {
     long lDefaultStackWidth = 1024;
     long lDefaultStackHeight = 2048;
+
+    if (pUseStages)
+    {
+      KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
+      addDevice(0, lKCubeDeviceFactory);
+      KCubeDevice lXStage = lKCubeDeviceFactory.createKCubeDevice(26000278, "X"); // XWing stage X-axis
+      KCubeDevice lYStage = lKCubeDeviceFactory.createKCubeDevice(26000298, "Y"); // XWing stage Y-axis
+      KCubeDevice lZStage = lKCubeDeviceFactory.createKCubeDevice(26000299, "Z"); // XWing stage Z-axis
+      addDevice(0, lXStage);
+      addDevice(0, lYStage);
+      addDevice(0, lZStage);
+
+      BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new KCubeThreeAxesStageDevice("Stage", lXStage, lYStage, lZStage);
+      addDevice(0, lBasicThreeAxesStageInterface);
+
+      BasicThreeAxesStageScheduler lBasicThreeAxesStageScheduler = new BasicThreeAxesStageScheduler(lBasicThreeAxesStageInterface);
+      addDevice(0, lBasicThreeAxesStageScheduler);
+
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "I0B")); // XWing LS0 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "I1B")); // XWing LS1 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000317, "I2B")); // XWing LS2 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
+
+
+    }
+
+
+
 
     // Setting up lasers:
     {
@@ -187,6 +237,77 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, lLightSheetOpticalSwitch);
     }
 
+    {
+      //addDevice(0, new TSTStageDevice());
+    }
+  }
+
+  @Override
+  public void addSimulatedDevices(boolean pDummySimulation,
+                                  boolean pXYZRStage,
+                                  boolean pSharedLightSheetControl,
+                                  LightSheetMicroscopeSimulationDevice pSimulatorDevice)
+  {
+    super.addSimulatedDevices(pDummySimulation, pXYZRStage, pSharedLightSheetControl, pSimulatorDevice);
+
+
+    {
+      //KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
+      //addDevice(0, lKCubeDeviceFactory);
+      //addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
+
+      BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new SimulatedThreeAxesStageDevice();
+
+      addDevice(0, lBasicThreeAxesStageInterface);
+
+      BasicThreeAxesStageScheduler lBasicThreeAxesStageScheduler = new BasicThreeAxesStageScheduler(lBasicThreeAxesStageInterface);
+      addDevice(0, lBasicThreeAxesStageScheduler);
+
+
+    }
+
+    // setup adaptators
+    //{
+    //  AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
+    //  addDevice(0, lAdaptiveZScheduler);
+    //}
+
+  }
+
+  @Override
+  public void addStandardDevices(int pNumberOfControlPlanes) {
+    super.addStandardDevices(pNumberOfControlPlanes);
+
+
+    // setup adaptators/schedulers
+    {
+      AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
+      addDevice(0, lAdaptiveZScheduler);
+    }
+
+    {
+      MultiChannelScheduler lMultiChannelScheduler = new MultiChannelScheduler();
+      addDevice(0, lMultiChannelScheduler);
+    }
+
+    // initialize copilot
+    {
+      this.getNumberOfLightSheets();
+      CalibrationImagerDevice
+          lCalibrationImagerDevice = new CalibrationImagerDevice(this, new Variable<Double>("", 0.0));
+      addDevice(0, lCalibrationImagerDevice);
+
+      ArrayList<StepFactoryInterface> lCopilotStepList = new ArrayList<StepFactoryInterface>();
+      lCopilotStepList.add(new Step1ManualCalibrationFactory());
+      lCopilotStepList.add(new Step2AutomaticCalibrationFactory());
+      lCopilotStepList.add(new Step3SampleMountingFactory());
+      lCopilotStepList.add(new Step4AutomaticCalibrationWithSampleFactory());
+      lCopilotStepList.add(new Step5RecalibrationWithSampleFactory());
+
+      addDevice(0, new CopilotDevice(this, lCopilotStepList));
+    }
+
+    addDevice(0, new FastImageDevice(this));
   }
 
 }

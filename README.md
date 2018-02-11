@@ -4,20 +4,14 @@ This README would normally document whatever steps are necessary to get your app
 
 ### How to build the project? ###
 
-* Building ScopeB
-To build ScopeB you need Gradle build tool - http://www.gradle.org/overview
-Tip: Make sure that the gradle executable is in your path.
+* Developing XWing
+To develop XWing using an IDE such as Intellij, just import the projects gradle.build file in your IDE.
 
-to build the project:
+* Building XWing-Executable
+Go to the command line, navigate to the folder where this file is located and run (suggested OS: Windows 7 or 10):
 
-    gradle build
+gradlew jfxnative
 
-To generate eclipse project files:
+Afterwards, you will find an XWing.exe in this sub directory:
 
-    gradle eclipse
-
-To clean-up modified eclipse project files:
-
-    gradle cleanEclipse
-
-That's it, now you can import  ScopeB project in Eclipse. 
+build\jfx\native\XWing
