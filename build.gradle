@@ -67,7 +67,7 @@ def getVersionName = {
 
 sourceCompatibility = 1.8
 group = 'net.clearcontrol'
-version = "1.0.7" //getVersionName()
+version = "1.0.10" //getVersionName()
 
 test
 {
@@ -91,7 +91,9 @@ dependencies
 {
     compile 'net.imglib2:imglib2:4.6.1'
 
-    //compile 'net.imglib2:pom-imglib2:10.0.1'
+    // SpimCAT:
+    compile ('de.mpicbg.rhaase:postprocessing-utilities:0.2.7')  {transitive= true; changing= true}
+
 
   // Thorlabs K-cube control:
     compile ('net.clearcontrol:aptj:0.0.2-RH')      {transitive= true; changing= true}
@@ -99,7 +101,7 @@ dependencies
 
     // ClearControl:
     compile ('net.clearvolume:cleargl:2.0.4')
-    compile ('net.clearcontrol:clearcontrol-lightsheet:1.17.3-RH')      {transitive= true; changing= true}
+    compile ('net.clearcontrol:clearcontrol-lightsheet:1.17.4-RH')      {transitive= true; changing= true}
 
 
 	compile group: 'junit', name: 'junit', version: '4.11'
