@@ -1,11 +1,14 @@
 package clearcontrol.gui.jfx.custom.image;
 
 import clearcontrol.core.log.LoggingFeature;
+import de.mpicbg.rhaase.spimcat.postprocessing.fijiplugins.imageanalysis.statistics.Average;
+import de.mpicbg.rhaase.spimcat.postprocessing.fijiplugins.imageanalysis.statistics.StandardDeviation;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.stats.ComputeMinMax;
@@ -31,26 +34,43 @@ public class RGBImgImage<T extends RealType<T>> extends WritableImage implements
     RandomAccess<T> lGreenRA = null;
     RandomAccess<T> lBlueRA = null;
 
-    T lMinValue = pRAI.randomAccess().get().copy();
-    T lMaxValue = pRAI.randomAccess().get().copy();
-
-    ComputeMinMax<T> lComputeMinMax = new ComputeMinMax<T>(Views.iterable(pRAI), lMinValue, lMaxValue);
-    lComputeMinMax.process();
-
-    double lMin = lMinValue.getRealDouble();
-    double lMax = lMaxValue.getRealDouble();
+    T lMinRedValue = pRAI.randomAccess().get().copy();
+    T lMaxRedValue = pRAI.randomAccess().get().copy();
+    T lMinGreenValue = pRAI.randomAccess().get().copy();
+    T lMaxGreenValue = pRAI.randomAccess().get().copy();
+    T lMinBlueValue = pRAI.randomAccess().get().copy();
+    T lMaxBlueValue = pRAI.randomAccess().get().copy();
 
     if (pRAI.numDimensions() == 2)
     {
       lRedRA = pRAI.randomAccess();
+      computeViewRangeMinMax(Views.iterable(pRAI),
+                               lMinRedValue,
+                               lMaxRedValue);
+
     } else if (pRAI.numDimensions() == 3) {
       lRedRA = Views.hyperSlice(pRAI, 2, 0).randomAccess();
+      computeViewRangeMinMax(Views.iterable(Views.hyperSlice(pRAI,
+                                                               2,
+                                                               0)),
+                               lMinRedValue,
+                               lMaxRedValue);
       if (pRAI.dimension(2) > 1)
       {
         lGreenRA = Views.hyperSlice(pRAI, 2, 1).randomAccess();
+        computeViewRangeMinMax(Views.iterable(Views.hyperSlice(pRAI,
+                                                                 2,
+                                                                 1)),
+                                 lMinGreenValue,
+                                 lMaxGreenValue);
         if (pRAI.dimension(2) > 2)
         {
           lBlueRA = Views.hyperSlice(pRAI, 2, 2).randomAccess();
+          computeViewRangeMinMax(Views.iterable(Views.hyperSlice(pRAI,
+                                                                   2,
+                                                                   2)),
+                                   lMinBlueValue,
+                                   lMaxBlueValue);
         }
       }
     } else {
@@ -58,12 +78,32 @@ public class RGBImgImage<T extends RealType<T>> extends WritableImage implements
       return;
     }
 
+
+    double lMinRed = lMinRedValue.getRealDouble();
+    double lMaxRed = lMaxRedValue.getRealDouble();
+    double lMinGreen = lMinGreenValue.getRealDouble();
+    double lMaxGreen = lMaxGreenValue.getRealDouble();
+    double lMinBlue = lMinBlueValue.getRealDouble();
+    double lMaxBlue = lMaxBlueValue.getRealDouble();
+
+    info("lMinRed" + lMinRed);
+    info("lMaxRed" + lMaxRed);
+    info("lMinGreen" + lMinGreen);
+    info("lMaxGreen" + lMaxGreen);
+
+    lMinRed = 100;
+    lMinGreen = 100;
+    lMaxRed = 130;
+    lMaxGreen = 130;
+
     double lRed = 0;
     double lGreen = 0;
     double lBlue = 0;
     double lOpacity = 1.0;
 
-    double lRange = lMax - lMin;
+    double lRedRange = lMaxRed - lMinRed;
+    double lGreenRange = lMaxGreen - lMinGreen;
+    double lBlueRange = lMaxBlue - lMinBlue;
 
 
     int lWidth = Math.min((int)pRAI.dimension(0), (int)getWidth());
@@ -81,14 +121,14 @@ public class RGBImgImage<T extends RealType<T>> extends WritableImage implements
 
         lRedRA.setPosition(position);
 
-        lRed = (lRedRA.get().getRealDouble() - lMin) / lRange;
+        lRed = (lRedRA.get().getRealDouble() - lMinRed) / lRedRange;
         if (lGreenRA != null) {
           lGreenRA.setPosition(position);
-          lGreen = (lGreenRA.get().getRealDouble() - lMin) / lRange;
+          lGreen = (lGreenRA.get().getRealDouble() - lMinGreen) / lGreenRange;
         }
         if (lBlueRA != null) {
           lBlueRA.setPosition(position);
-          lBlue = (lBlueRA.get().getRealDouble() - lMin) / lRange;
+          lBlue = (lBlueRA.get().getRealDouble() - lMinBlue) / lBlueRange;
         }
         if (lRed < 0) {
           lRed = 0;
@@ -113,5 +153,16 @@ public class RGBImgImage<T extends RealType<T>> extends WritableImage implements
         lPixelWriter.setColor(x, y, color);
       }
     }
+  }
+
+  private void computeViewRangeMinMax(IterableInterval<T> pRAI, T pMin, T pMax) {
+    Average<T> lAverage = new Average<T>(pRAI);
+    double lAverageValue = lAverage.getAverage();
+    StandardDeviation<T> lStdDev = new StandardDeviation<T>(pRAI, lAverage);
+    double lStdDevValue = lStdDev.getStandardDevation();
+    info("determined avg: " + lAverage);
+    info("determined std: " + lStdDevValue);
+    pMin.setReal(lAverageValue - 2 * lStdDevValue );
+    pMax.setReal(lAverageValue + 2 * lStdDevValue );
   }
 }
