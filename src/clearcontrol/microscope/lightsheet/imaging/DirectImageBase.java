@@ -29,7 +29,7 @@ public abstract class DirectImageBase implements LoggingFeature
   protected int mLightSheetIndex = 0;
   protected int mDetectionArmIndex = 0;
 
-  protected double mExposureTimeInSeconds = 0.05;
+  protected double mExposureTimeInSeconds = 0.01;
 
   private int mImageWidth = 512;
   private int mImageHeight = 512;
@@ -130,7 +130,7 @@ public abstract class DirectImageBase implements LoggingFeature
     return true;
   }
 
-  public OffHeapPlanarStack getImage() {
+  public OffHeapPlanarStack acquire() {
     image();
     return mResultImage;
   }
