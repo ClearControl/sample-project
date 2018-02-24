@@ -30,8 +30,17 @@ public class MultiChannelScheduler extends SchedulerBase implements
     super("Multichannel scheduler");
   }
 
-  @Override public boolean doExperiment(long pTimePoint)
+
+  @Override public boolean initialize()
   {
+    mTimePointCount = -1;
+    return true;
+  }
+
+  int mTimePointCount = -1;
+  @Override public boolean enqueue(long pTimePoint)
+  {
+
     if (mMicroscope instanceof LightSheetMicroscopeInterface) {
       mLightSheetMicroscope = (LightSheetMicroscopeInterface) mMicroscope;
     } else {
@@ -49,13 +58,13 @@ public class MultiChannelScheduler extends SchedulerBase implements
       mInitialized = true;
     }
 
-
+    mTimePointCount++;
 
     if (lLaserList.size() == 2) {
       LaserDeviceInterface lLaser1 = lLaserList.get(0);
       LaserDeviceInterface lLaser2 = lLaserList.get(1);
 
-      if (pTimePoint % 2 == 0) {
+      if (mTimePointCount % 2 == 0) {
         lLaser1.setLaserPowerOn(true);
         lLaser1.setLaserOn(true);
         lLaser1.setTargetPowerInPercent(mLaserPower.get(0));

@@ -58,11 +58,21 @@ public class AdaptiveZScheduler extends SchedulerBase implements
     super("Adaptation Z scheduler");
   }
 
-  @Override public boolean doExperiment(long pTimePoint)
+  @Override public boolean initialize()
   {
     if (mMicroscope instanceof LightSheetMicroscopeInterface) {
       mLightSheetMicroscope = (LightSheetMicroscopeInterface) mMicroscope;
     } else {
+      warning("Error: I only support lightsheet microscopes!");
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override public boolean enqueue(long pTimePoint)
+  {
+    if (!(mMicroscope instanceof LightSheetMicroscopeInterface)) {
       warning("Error: I only support lightsheet microscopes!");
       return false;
     }

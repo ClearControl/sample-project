@@ -39,43 +39,46 @@ public class BasicThreeAxesStageScheduler extends SchedulerBase implements
     mNumberOfStepsVariable = new BoundedVariable<Integer>("Number of steps", 10, 0, Integer.MAX_VALUE);
   }
 
-  @Override public boolean doExperiment(long pTimePoint)
+
+  @Override public boolean initialize()
   {
-    if (pTimePoint == 0) {
-      info("Go to start position");
-      double
-          stepDistanceX = mStartXVariable.get() - mBasicThreeAxesStageInterface.getXPositionVariable().get();
-      double
-          stepDistanceY = mStartYVariable.get() - mBasicThreeAxesStageInterface.getYPositionVariable().get();
-      double
-          stepDistanceZ = mStartZVariable.get() - mBasicThreeAxesStageInterface.getZPositionVariable().get();
+    info("Go to start position");
+    double
+        stepDistanceX = mStartXVariable.get() - mBasicThreeAxesStageInterface.getXPositionVariable().get();
+    double
+        stepDistanceY = mStartYVariable.get() - mBasicThreeAxesStageInterface.getYPositionVariable().get();
+    double
+        stepDistanceZ = mStartZVariable.get() - mBasicThreeAxesStageInterface.getZPositionVariable().get();
 
-      mBasicThreeAxesStageInterface.moveXBy(stepDistanceX, true);
-      mBasicThreeAxesStageInterface.moveYBy(stepDistanceY, true);
-      mBasicThreeAxesStageInterface.moveZBy(stepDistanceZ, true);
-    } else
-    {
+    mBasicThreeAxesStageInterface.moveXBy(stepDistanceX, true);
+    mBasicThreeAxesStageInterface.moveYBy(stepDistanceY, true);
+    mBasicThreeAxesStageInterface.moveZBy(stepDistanceZ, true);
 
-      double
-          stepDistanceX =
-          (mStopXVariable.get() - mStartXVariable.get()) / (
-              mNumberOfStepsVariable.get()
-              - 1);
-      double
-          stepDistanceY =
-          (mStopYVariable.get() - mStartYVariable.get()) / (
-              mNumberOfStepsVariable.get()
-              - 1);
-      double
-          stepDistanceZ =
-          (mStopZVariable.get() - mStartZVariable.get()) / (
-              mNumberOfStepsVariable.get()
-              - 1);
+    return true;
+  }
 
-      mBasicThreeAxesStageInterface.moveXBy(stepDistanceX, true);
-      mBasicThreeAxesStageInterface.moveYBy(stepDistanceY, true);
-      mBasicThreeAxesStageInterface.moveZBy(stepDistanceZ, true);
-    }
+  @Override public boolean enqueue(long pTimePoint)
+  {
+    double
+        lStepDistanceX =
+        (mStopXVariable.get() - mStartXVariable.get()) / (
+            mNumberOfStepsVariable.get()
+            - 1);
+    double
+        lStepDistanceY =
+        (mStopYVariable.get() - mStartYVariable.get()) / (
+            mNumberOfStepsVariable.get()
+            - 1);
+    double
+        lStepDistanceZ =
+        (mStopZVariable.get() - mStartZVariable.get()) / (
+            mNumberOfStepsVariable.get()
+            - 1);
+
+    mBasicThreeAxesStageInterface.moveXBy(lStepDistanceX, true);
+    mBasicThreeAxesStageInterface.moveYBy(lStepDistanceY, true);
+    mBasicThreeAxesStageInterface.moveZBy(lStepDistanceZ, true);
+
     return true;
   }
 
