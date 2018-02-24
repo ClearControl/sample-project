@@ -14,7 +14,6 @@ import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.imglib2.StackToImgConverter;
 import de.mpicbg.rhaase.spimcat.postprocessing.fijiplugins.imagemath.Sampler;
 import de.mpicbg.rhaase.spimcat.postprocessing.fijiplugins.projection.ArgMaxProjection;
-import ij.plugin.Duplicator;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -315,7 +314,7 @@ public class Step1ManualCalibration extends CustomGridPane implements
         lDirectImageStack.setNumberOfRequestedImages(lNumberOfSteps);
         lDirectImageStack.setIlluminationZStepDistance(lStepZDistance);
         lDirectImageStack.setDetectionZStepDistance(lStepZDistance);
-        OffHeapPlanarStack lStack = lDirectImageStack.getImage();
+        OffHeapPlanarStack lStack = lDirectImageStack.acquire();
         RandomAccessibleInterval<UnsignedShortType> lRAI = new StackToImgConverter<UnsignedShortType>(lStack).getRandomAccessibleInterval();
         lLastStackVariable.set(lRAI);
         info("Stack before resampling: " + lRAI.dimension(0) + "/" + lRAI.dimension(1) + "/" + lRAI.dimension(2));
