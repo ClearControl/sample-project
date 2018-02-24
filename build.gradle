@@ -15,7 +15,10 @@ buildscript {
 }
 
 
-plugins { id "us.kirchmeier.capsule" version "1.0.2" }
+plugins {
+    id "com.jfrog.bintray" version "1.2"
+    id "us.kirchmeier.capsule" version "1.0.2"
+}
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -101,7 +104,7 @@ dependencies
 
     // ClearControl:
     compile ('net.clearvolume:cleargl:2.0.4')
-    compile ('net.clearcontrol:clearcontrol-lightsheet:1.17.4-RH')      {transitive= true; changing= true}
+    compile ('net.clearcontrol:clearcontrol-lightsheet:1.18.0')      {transitive= true; changing= true}
 
 
 	compile group: 'junit', name: 'junit', version: '4.11'
@@ -184,6 +187,8 @@ publishing {
     }
 }
 
+
+apply from: 'gradle/bintrayUpload.gradle'
 
 
 //***********************************************************************************
