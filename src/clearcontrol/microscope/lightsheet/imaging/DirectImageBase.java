@@ -9,6 +9,7 @@ import clearcontrol.stack.imglib2.StackToImgConverter;
 import javafx.scene.effect.Light;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import xwing.XWingMicroscope;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +68,10 @@ public abstract class DirectImageBase implements LoggingFeature
       lQueue.setI(i, false);
     }
 
-
+    if (mLightSheetMicroscope instanceof XWingMicroscope) {
+      // special config of light sheet width
+      lQueue.setIW(mLightSheetIndex, 0.45);
+    }
     lQueue.setI(mLightSheetIndex, true);
     lQueue.setIX(mLightSheetIndex, 0);
     lQueue.setIY(mLightSheetIndex, 0);
