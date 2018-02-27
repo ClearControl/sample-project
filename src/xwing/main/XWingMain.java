@@ -245,10 +245,10 @@ public class XWingMain extends Application implements LoggingFeature
       }
       lXWingMicroscope.addStandardDevices(lNumberOfControlPlanes);
 
-      EDFImagingEngine
-          lDepthOfFocusImagingEngine =
-          new EDFImagingEngine(lStackFusionContext, lXWingMicroscope);
-      lXWingMicroscope.addDevice(0, lDepthOfFocusImagingEngine);
+      //EDFImagingEngine
+      //    lDepthOfFocusImagingEngine =
+      //    new EDFImagingEngine(lStackFusionContext, lXWingMicroscope);
+      //lXWingMicroscope.addDevice(0, lDepthOfFocusImagingEngine);
 
 
       info("Opening microscope devices...");
