@@ -85,9 +85,9 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
     {
       KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
       addDevice(0, lKCubeDeviceFactory);
-      KCubeDevice lXStage = lKCubeDeviceFactory.createKCubeDevice(26000278, "X"); // XWing stage X-axis
-      KCubeDevice lYStage = lKCubeDeviceFactory.createKCubeDevice(26000298, "Y"); // XWing stage Y-axis
-      KCubeDevice lZStage = lKCubeDeviceFactory.createKCubeDevice(26000299, "Z"); // XWing stage Z-axis
+      KCubeDevice lXStage = lKCubeDeviceFactory.createKCubeDevice(26000278, "XKCubeStage"); // XWing stage X-axis
+      KCubeDevice lYStage = lKCubeDeviceFactory.createKCubeDevice(26000298, "YKCubeStage"); // XWing stage Y-axis
+      KCubeDevice lZStage = lKCubeDeviceFactory.createKCubeDevice(26000299, "ZKCubeStage"); // XWing stage Z-axis
       addDevice(0, lXStage);
       addDevice(0, lYStage);
       addDevice(0, lZStage);
@@ -98,10 +98,10 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       BasicThreeAxesStageScheduler lBasicThreeAxesStageScheduler = new BasicThreeAxesStageScheduler(lBasicThreeAxesStageInterface);
       addDevice(0, lBasicThreeAxesStageScheduler);
 
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "I0B")); // XWing LS0 beta angle
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "I1B")); // XWing LS1 beta angle
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000317, "I2B")); // XWing LS2 beta angle
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "Illumination0BAngleKCubeStage")); // XWing LS0 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "Illumination1BAngleKCubeStage")); // XWing LS1 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000317, "Illumination2BAngleKCubeStage")); // XWing LS2 beta angle
+      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "Illumination3BAngleKCubeStage")); // XWing LS3 beta angle
 
 
     }
