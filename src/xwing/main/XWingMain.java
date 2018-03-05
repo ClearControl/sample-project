@@ -284,7 +284,7 @@ public class XWingMain extends Application implements LoggingFeature
             lXWingMicroscope.stop();
             info("Closing microscope devices...");
             lXWingMicroscope.close();
-          }
+           }
          else {
             mClearCL = lClearCL;
             return lXWingMicroscope;
