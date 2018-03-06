@@ -5,6 +5,7 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.stack.OffHeapPlanarStack;
+import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.imglib2.StackToImgConverter;
 import javafx.scene.effect.Light;
 import net.imglib2.RandomAccessibleInterval;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeoutException;
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
-public abstract class DirectImageBase implements LoggingFeature
+public abstract class DirectImageBase implements DirectImageInterface, LoggingFeature
 {
   // input
   private LightSheetMicroscope mLightSheetMicroscope;
@@ -36,7 +37,7 @@ public abstract class DirectImageBase implements LoggingFeature
   private int mImageHeight = 512;
 
   // output
-  OffHeapPlanarStack mResultImage = null;
+  StackInterface mResultImage = null;
 
   public DirectImageBase(LightSheetMicroscope pLightSheetMicroscope) {
     mLightSheetMicroscope = pLightSheetMicroscope;
@@ -127,14 +128,13 @@ public abstract class DirectImageBase implements LoggingFeature
       return false;
     }
 
-    mResultImage =
-        (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(mDetectionArmIndex)
+    mResultImage = mLightSheetMicroscope.getCameraStackVariable(mDetectionArmIndex)
                                                   .get();
 
     return true;
   }
 
-  public OffHeapPlanarStack acquire() {
+  public StackInterface acquire() {
     image();
     return mResultImage;
   }

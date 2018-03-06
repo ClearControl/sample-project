@@ -314,7 +314,7 @@ public class Step1ManualCalibration extends CustomGridPane implements
         lDirectImageStack.setNumberOfRequestedImages(lNumberOfSteps);
         lDirectImageStack.setIlluminationZStepDistance(lStepZDistance);
         lDirectImageStack.setDetectionZStepDistance(lStepZDistance);
-        OffHeapPlanarStack lStack = lDirectImageStack.acquire();
+        OffHeapPlanarStack lStack = (OffHeapPlanarStack)lDirectImageStack.acquire();
         RandomAccessibleInterval<UnsignedShortType> lRAI = new StackToImgConverter<UnsignedShortType>(lStack).getRandomAccessibleInterval();
         lLastStackVariable.set(lRAI);
         info("Stack before resampling: " + lRAI.dimension(0) + "/" + lRAI.dimension(1) + "/" + lRAI.dimension(2));
