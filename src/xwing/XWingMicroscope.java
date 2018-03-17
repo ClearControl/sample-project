@@ -17,6 +17,8 @@ import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
 import clearcontrol.devices.stages.kcube.impl.KCubeThreeAxesStageDevice;
 import clearcontrol.devices.stages.kcube.scheduler.BasicThreeAxesStageScheduler;
 import clearcontrol.devices.stages.kcube.sim.SimulatedThreeAxesStageDevice;
+import clearcontrol.microscope.lightsheet.adaptive.modules.*;
+import clearcontrol.microscope.lightsheet.adaptive.schedulers.AdaptationScheduler;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
@@ -283,6 +285,37 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
     {
       AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
       addDevice(0, lAdaptiveZScheduler);
+    }
+
+    {
+      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Focus Z",
+                                                                         AdaptationZ.class);
+      addDevice(0, lAdaptationScheduler);
+    }
+    {
+      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Focus Z with manual detection arm selection",
+                                                                         AdaptationZManualDetectionArmSelection.class);
+      addDevice(0, lAdaptationScheduler);
+    }
+    {
+      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Focus Z with sliding window detection arm selection",
+                                                                         AdaptationZSlidingWindowDetectionArmSelection.class);
+      addDevice(0, lAdaptationScheduler);
+    }
+    {
+      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Lightsheet angle alpha",
+                                                                         AdaptationA.class);
+      addDevice(0, lAdaptationScheduler);
+    }
+    {
+      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Power",
+                                                                         AdaptationP.class);
+      addDevice(0, lAdaptationScheduler);
+    }
+    {
+      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Lightsheet X position",
+                                                                         AdaptationX.class);
+      addDevice(0, lAdaptationScheduler);
     }
 
     {
