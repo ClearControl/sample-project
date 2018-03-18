@@ -36,10 +36,10 @@ public class DirectFusedImageStack implements DirectImageInterface, LoggingFeatu
   public StackInterface acquire() {
     InterpolatedAcquisitionState lCurrentState = (InterpolatedAcquisitionState) mLightSheetMicroscope.getAcquisitionStateManager().getCurrentState();
     LightSheetTimelapse lTimelapse = mLightSheetMicroscope.getDevice(LightSheetTimelapse.class, 0);
-    lCurrentState.getNumberOfZPlanesVariable().set((mMaxZ - mMinZ) / mSliceDistance + 1);
     lCurrentState.getExposureInSecondsVariable().set(mExposureTimeInSeconds);
     lCurrentState.getStackZLowVariable().set(mMinZ);
     lCurrentState.getStackZHighVariable().set(mMaxZ);
+    lCurrentState.getNumberOfZPlanesVariable().set((mMaxZ - mMinZ) / mSliceDistance + 1);
     lCurrentState.getImageWidthVariable().set(mImageWidth);
     lCurrentState.getImageHeightVariable().set(mImageHeight);
 
