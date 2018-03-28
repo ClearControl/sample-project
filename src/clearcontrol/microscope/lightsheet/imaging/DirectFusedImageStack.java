@@ -62,7 +62,7 @@ public class DirectFusedImageStack implements DirectImageInterface, LoggingFeatu
       break;
     case TimeLapseInterleaved:
     default:
-      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(SequentialAcquisitionScheduler.class, 0);
+      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(InterleavedAcquisitionScheduler.class, 0);
       break;
     }
 
