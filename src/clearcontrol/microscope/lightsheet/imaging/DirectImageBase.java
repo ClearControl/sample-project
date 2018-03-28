@@ -45,10 +45,6 @@ public abstract class DirectImageBase implements DirectImageInterface, LoggingFe
 
   private synchronized boolean image() {
 
-    if (mResultImage != null) {
-      return true;
-    }
-
     LightSheetMicroscopeQueue lQueue = mLightSheetMicroscope.requestQueue();
     lQueue.clearQueue();
     // lQueue.zero();
