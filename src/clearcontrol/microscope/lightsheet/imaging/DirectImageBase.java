@@ -28,10 +28,17 @@ public abstract class DirectImageBase implements DirectImageInterface, LoggingFe
   protected double mIlluminationZ = 0;
   protected double mDetectionZ = 0;
 
+  protected double mIlluminationX = 0;
+  protected double mIlluminationY = 0;
+  protected double mIlluminationH = 500;
+  protected double mIlluminationW = 0.45;
+
+  protected double mIlluminationA = 0;
+
   protected int mLightSheetIndex = 0;
   protected int mDetectionArmIndex = 0;
 
-  protected double mExposureTimeInSeconds = 0.01;
+  protected double mExposureTimeInSeconds = 0.05;
 
   private int mImageWidth = 512;
   private int mImageHeight = 512;
@@ -65,13 +72,16 @@ public abstract class DirectImageBase implements DirectImageInterface, LoggingFe
       lQueue.setI(i, false);
     }
 
-    if (mLightSheetMicroscope instanceof XWingMicroscope) {
-      // special config of light sheet width
-      lQueue.setIW(mLightSheetIndex, 0.45);
-    }
     lQueue.setI(mLightSheetIndex, true);
-    lQueue.setIX(mLightSheetIndex, 0);
-    lQueue.setIY(mLightSheetIndex, 0);
+    lQueue.setIX(mLightSheetIndex, mIlluminationX);
+    lQueue.setIY(mLightSheetIndex, mIlluminationY);
+    lQueue.setIZ(mLightSheetIndex, mIlluminationZ);
+    lQueue.setIW(mLightSheetIndex, mIlluminationW);
+    lQueue.setIH(mLightSheetIndex, mIlluminationH);
+    lQueue.setIA(mLightSheetIndex, mIlluminationA);
+
+    lQueue.setDZ(mDetectionArmIndex, mDetectionZ);
+
     /*mQueue.setIPattern(i,
                        0,
                        new BinaryStructuredIlluminationPattern());
@@ -80,10 +90,6 @@ public abstract class DirectImageBase implements DirectImageInterface, LoggingFe
                        new BinaryStructuredIlluminationPattern());
  */
 
-    //if (mInterpolatedAcquisitionState == null)
-    //{
-    lQueue.setDZ(mDetectionArmIndex, mDetectionZ);
-    //}
     lQueue.setC(mDetectionArmIndex, false);
 
     lQueue.addCurrentStateToQueue();
@@ -159,6 +165,28 @@ public abstract class DirectImageBase implements DirectImageInterface, LoggingFe
     mInterpolatedAcquisitionState = null;
     mIlluminationZ = pIlluminationZ;
   }
+
+  public void setIlluminationX(double pIlluminationX) {
+    this.mIlluminationX = pIlluminationX;
+  }
+
+  public void setIlluminationY(double pIlluminationY) {
+    this.mIlluminationY = pIlluminationY;
+  }
+
+  public void setIlluminationH(double pIlluminationH) {
+    this.mIlluminationH = pIlluminationH;
+  }
+
+  public void setIlluminationW(double pIlluminationW) {
+    this.mIlluminationW = pIlluminationW;
+  }
+
+
+  public void setIlluminationA(double pIlluminationA) {
+    this.mIlluminationA = pIlluminationA;
+  }
+
   public void setDetectionZ(double pDetectionZ) {
     invalidate();
     mDetectionZ = pDetectionZ;
