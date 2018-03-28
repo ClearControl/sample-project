@@ -11,9 +11,12 @@ import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 
 /**
+ * Deprecated: use clearcontrol.microscope.lightsheet.imaging.FusedStackImager instead
+ *
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * March 2018
  */
+@Deprecated
 public class DirectFusedImageStack implements DirectImageInterface, LoggingFeature
 {
   private LightSheetMicroscope mLightSheetMicroscope;

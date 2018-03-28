@@ -17,9 +17,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * Deprecated: use clearcontrol.microscope.lightsheet.imaging.ImagerBase instead
+ *
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
+@Deprecated
 public abstract class DirectImageBase implements DirectImageInterface, LoggingFeature
 {
   // input

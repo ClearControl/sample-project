@@ -4,9 +4,12 @@ import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
 
 /**
+ * Deprecated: use clearcontrol.microscope.lightsheet.imaging.SingleStackImager instead
+ *
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * February 2018
  */
+@Deprecated
 public class DirectImageStack extends DirectImageBase
 {
   private double mIlluminationZStepDistance = 1;
