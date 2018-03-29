@@ -117,6 +117,8 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
                                                new OmicronLaserDevice(0);
       addDevice(0, lLaserDevice488);
 
+      addDevice(new LaserPowerScheduler);
+
       final CoboltLaserDevice lLaserDevice594 =
                                               new CoboltLaserDevice("Mambo",
                                                                     100,
