@@ -6,6 +6,7 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
+import clearcontrol.devices.lasers.schedulers.LaserPowerScheduler;
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
@@ -117,13 +118,23 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
                                                new OmicronLaserDevice(0);
       addDevice(0, lLaserDevice488);
 
-      addDevice(new LaserPowerScheduler);
+      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 0.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 10.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 20.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 50.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 100.0));
 
       final CoboltLaserDevice lLaserDevice594 =
                                               new CoboltLaserDevice("Mambo",
                                                                     100,
                                                                     1);
       addDevice(1, lLaserDevice594);/**/
+
+      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 0.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 10.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 20.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 50.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 100.0));
 
     }
 
