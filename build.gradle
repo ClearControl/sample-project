@@ -70,7 +70,7 @@ def getVersionName = {
 
 sourceCompatibility = 1.8
 group = 'net.clearcontrol'
-version = "1.0.19" //getVersionName()
+version = "1.0.20" //getVersionName()
 
 test
 {
@@ -102,9 +102,12 @@ dependencies
     compile ('net.clearcontrol:aptj:0.0.2-RH')      {transitive= true; changing= true}
 
 
+    // FastFuse:
+    compile ('net.clearcontrol:fastfuse:0.6.3')      {transitive= true; changing= true}
+
     // ClearControl:
     compile ('net.clearvolume:cleargl:2.0.4')
-    compile ('net.clearcontrol:clearcontrol-lightsheet:1.22.8')      {transitive= true; changing= true}
+    compile ('net.clearcontrol:clearcontrol-lightsheet:1.22.9')      {transitive= true; changing= true}
 
 
 	compile group: 'junit', name: 'junit', version: '4.11'
