@@ -124,6 +124,11 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, new LaserPowerScheduler(lLaserDevice488, 50.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice488, 100.0));
 
+      addDevice(0, new LaserOnOffScheduler(lLaserDevice488, true));
+      addDevice(0, new LaserOnOffScheduler(lLaserDevice488, false));
+
+
+
       final CoboltLaserDevice lLaserDevice594 =
                                               new CoboltLaserDevice("Mambo",
                                                                     100,
@@ -135,6 +140,9 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, new LaserPowerScheduler(lLaserDevice594, 20.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice594, 50.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice594, 100.0));
+
+      addDevice(0, new LaserOnOffScheduler(lLaserDevice594, true));
+      addDevice(0, new LaserOnOffScheduler(lLaserDevice594, false));
 
     }
 
