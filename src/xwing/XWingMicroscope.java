@@ -6,6 +6,7 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
+import clearcontrol.devices.lasers.schedulers.LaserOnOffScheduler;
 import clearcontrol.devices.lasers.schedulers.LaserPowerScheduler;
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
@@ -119,6 +120,8 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, lLaserDevice488);
 
       addDevice(0, new LaserPowerScheduler(lLaserDevice488, 0.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 1.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 5.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice488, 10.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice488, 20.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice488, 50.0));
@@ -136,6 +139,8 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(1, lLaserDevice594);/**/
 
       addDevice(0, new LaserPowerScheduler(lLaserDevice594, 0.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 1.0));
+      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 5.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice594, 10.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice594, 20.0));
       addDevice(0, new LaserPowerScheduler(lLaserDevice594, 50.0));
