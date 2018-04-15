@@ -1,5 +1,8 @@
 package xwing.copilot.gui.steps.step1manualcalibration;
 
+import clearcl.ClearCLImage;
+import clearcl.imagej.ClearCLIJ;
+import clearcl.imagej.kernels.Kernels;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -61,8 +64,12 @@ public class Step1ManualCalibration extends CustomGridPane implements
 
   BoundedVariable<Double> lZVariable;
 
+  ClearCLIJ clij;
+
   public Step1ManualCalibration(CopilotDevice pCopilotDevice)
   {
+    clij = ClearCLIJ.getInstance();
+
     setAlignment(Pos.TOP_LEFT);
 
     int lRow = 0;
@@ -297,7 +304,7 @@ public class Step1ManualCalibration extends CustomGridPane implements
     lGridPane.add(new Label("Exposure time (sec)"), 0, 8);
     lGridPane.add(new NumberVariableTextField<Double>("", lExposureTimeVariable), 1, 8);
 
-    Variable<RandomAccessibleInterval<UnsignedShortType>> lLastStackVariable = new Variable<RandomAccessibleInterval<UnsignedShortType>>("", null);
+    Variable<OffHeapPlanarStack> lLastStackVariable = new Variable<OffHeapPlanarStack>("", null);
 
     EventHandler<ActionEvent> lEventHandler = new EventHandler<ActionEvent>()
     {
@@ -315,56 +322,55 @@ public class Step1ManualCalibration extends CustomGridPane implements
         lDirectImageStack.setIlluminationZStepDistance(lStepZDistance);
         lDirectImageStack.setDetectionZStepDistance(lStepZDistance);
         OffHeapPlanarStack lStack = (OffHeapPlanarStack)lDirectImageStack.acquire();
-        RandomAccessibleInterval<UnsignedShortType> lRAI = new StackToImgConverter<UnsignedShortType>(lStack).getRandomAccessibleInterval();
-        lLastStackVariable.set(lRAI);
-        info("Stack before resampling: " + lRAI.dimension(0) + "/" + lRAI.dimension(1) + "/" + lRAI.dimension(2));
+        //RandomAccessibleInterval<UnsignedShortType> lRAI = new StackToImgConverter<UnsignedShortType>(lStack).getRandomAccessibleInterval();
+        lLastStackVariable.set(lStack);
+        //info("Stack before resampling: " + lRAI.dimension(0) + "/" + lRAI.dimension(1) + "/" + lRAI.dimension(2));
 
-        lRAI = new Sampler(lRAI, new double[]{
+        /*lRAI = new Sampler(lRAI, new double[]{
             ((double)mImagePaneSize) / 2048.0,
             ((double)mImagePaneSize) / 2048.0,
             ((double)mImagePaneSize) / ((double)lNumberOfSteps)
-        }).getSampledImage();
-        info("Stack after resampling: " + lRAI.dimension(0) + "/" + lRAI.dimension(1) + "/" + lRAI.dimension(2));
+        }).getSampledImage();*/
+
+
+        ClearCLImage clImage = clij.converter(lStack).getClearCLImage();
+        ClearCLImage sampledCLImage = clij.createCLImage(new long[]{mImagePaneSize, mImagePaneSize, mImagePaneSize}, clImage.getChannelDataType());
+
+        Kernels.downsample(clij, clImage, sampledCLImage, ((float)mImagePaneSize) / 2048.0f, ((float)mImagePaneSize) / 2048.0f, ((float)mImagePaneSize) / ((float)lNumberOfSteps));
+
+        info("Stack after resampling: " + sampledCLImage.getWidth() + "/" + sampledCLImage.getHeight() + "/" + sampledCLImage.getDepth());
+
+        ClearCLImage projectedCLImage = clij.createCLImage(new long[]{mImagePaneSize, mImagePaneSize}, clImage.getChannelDataType());
+
 
         {
-          RandomAccessibleInterval<UnsignedShortType>
-              lRotatedRAI =
-              Views.permute(lRAI, 1, 2);
-          ArgMaxProjection<UnsignedShortType>
-              lArgMaxProjection =
-              new ArgMaxProjection<>(lRotatedRAI);
-          RandomAccessibleInterval<FloatType>
-              lProjectedRAI =
-              lArgMaxProjection.getMaxProjection();
+          Kernels.maxProjection(clij, sampledCLImage, projectedCLImage, 0, 2, 1);
+          RandomAccessibleInterval
+              lProjectedRAI = clij.converter(projectedCLImage).getRandomAccessibleInterval();
           RGBImgImage<FloatType> lRGBImage = new RGBImgImage<>(lProjectedRAI);
           mTopMaximumProjectionImagePane.setImage(lRGBImage);
         }
 
         {
-          RandomAccessibleInterval<UnsignedShortType>
-              lRotatedRAI =
-              Views.permute(lRAI, 0, 2);
-          ArgMaxProjection<UnsignedShortType>
-              lArgMaxProjection =
-              new ArgMaxProjection<>(lRotatedRAI);
-          RandomAccessibleInterval<FloatType>
-              lProjectedRAI =
-              lArgMaxProjection.getMaxProjection();
+          Kernels.maxProjection(clij, sampledCLImage, projectedCLImage, 1, 2, 0);
+          RandomAccessibleInterval
+              lProjectedRAI = clij.converter(projectedCLImage).getRandomAccessibleInterval();
           RGBImgImage<FloatType> lRGBImage = new RGBImgImage<>(lProjectedRAI);
           mSideMaximumProjectionImagePane.setImage(lRGBImage);
         }
 
 
         {
-          ArgMaxProjection<UnsignedShortType>
-              lArgMaxProjection =
-              new ArgMaxProjection<>(lRAI);
-          RandomAccessibleInterval<FloatType>
-              lProjectedRAI =
-              lArgMaxProjection.getMaxProjection();
+          Kernels.maxProjection(clij, sampledCLImage, projectedCLImage);
+          RandomAccessibleInterval
+              lProjectedRAI = clij.converter(projectedCLImage).getRandomAccessibleInterval();
           RGBImgImage<FloatType> lRGBImage = new RGBImgImage<>(lProjectedRAI);
           mFrontMaximumProjectionImagePane.setImage(lRGBImage);
         }
+
+        clImage.close();
+        sampledCLImage.close();
+        projectedCLImage.close();
       }
     };
 
@@ -380,8 +386,8 @@ public class Step1ManualCalibration extends CustomGridPane implements
         lEventHandler.handle(null);
       }
       mCopilotDevice.showImageJ();
-      //new Duplicator().run(ImageJFunctions.wrap(lLastStackVariable.get(), "")).show();
-      ImageJFunctions.wrap(lLastStackVariable.get(), "").show();
+
+      clij.show(lLastStackVariable.get(), "Last stack");
     });
     lGridPane.add(lShowStackButton, 1, 9);
 

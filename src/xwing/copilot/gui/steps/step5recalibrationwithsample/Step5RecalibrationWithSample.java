@@ -10,8 +10,9 @@ import clearcontrol.gui.jfx.custom.image.ImagePane;
 import clearcontrol.gui.jfx.custom.image.RGBImgImage;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
+import clearcontrol.microscope.lightsheet.adaptive.schedulers.FocusFinderAlphaByVariationScheduler;
+import clearcontrol.microscope.lightsheet.adaptive.schedulers.FocusFinderZScheduler;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
-import ij.ImageJ;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -58,7 +59,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
   int mTopLeftLightSheet = 2;
   int mTopRightLightSheet = 1;
   int mBottomLeftLightSheet = 3;
-  int mBottomRightightSheet = 0;
+  int mBottomRightLightSheet = 0;
 
   private int mImagePaneSize = 300;
 
@@ -362,6 +363,9 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                                        .get(),
                                    mTopLeftLightSheet), "C" + mCameraChoice + "L" + mTopLeftLightSheet).show();
     });
+    lTopLeftPanel.setAutoInitAction((a) -> {
+      initializeFocusZandAlpha(pCopilotDevice, mTopLeftLightSheet);
+    });
 
     ControlPlanePanel
         lBottomLeftPanel =
@@ -375,6 +379,9 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                                    mCameraChoice
                                        .get(),
                                    mBottomLeftLightSheet), "C" + mCameraChoice + "L" + mBottomLeftLightSheet).show();
+    });
+    lBottomLeftPanel.setAutoInitAction((a) -> {
+      initializeFocusZandAlpha(pCopilotDevice, mBottomLeftLightSheet);
     });
 
     ControlPlanePanel
@@ -390,20 +397,27 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                                        .get(),
                                    mTopRightLightSheet), "C" + mCameraChoice + "L" + mTopRightLightSheet).show();
     });
+    lTopRightPanel.setAutoInitAction((a) -> {
+      initializeFocusZandAlpha(pCopilotDevice, mTopRightLightSheet);
+    });
+
 
     ControlPlanePanel
         lBottomRightPanel =
         new ControlPlanePanel(mInterpolatedAcqusitionState,
                               mControlPlaneIndexVariable,
-                              mBottomRightightSheet);
+                              mBottomRightLightSheet);
     lBottomRightPanel.setOpenExternallyAction((a)->{
       pCopilotDevice.showImageJ();
       ImageJFunctions.wrap(mCalibrationImagerDevice
                              .getImage(
                                  mCameraChoice
-                                     .get(),
-                                 mBottomRightightSheet), "C" + mCameraChoice + "L" + mBottomRightightSheet).show();
-  });
+                                     .get(), mBottomRightLightSheet), "C" + mCameraChoice + "L" + mBottomRightLightSheet).show();
+    });
+    lBottomRightPanel.setAutoInitAction((a) -> {
+      initializeFocusZandAlpha(pCopilotDevice, mBottomRightLightSheet);
+    });
+
 
     lImagesGridPane.add(lTopLeftPanel, 0, 0);
     lImagesGridPane.add(lBottomLeftPanel, 0, 2);
@@ -417,6 +431,21 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
     lScrollPane.setMinWidth(2.5 * mImagePaneSize + 20 + 50);
     this.add(lScrollPane, 1, 0, 1, 15);
 
+  }
+
+  private void initializeFocusZandAlpha(CopilotDevice pCopilotDevice, int lightSheetIndex)
+  {
+    FocusFinderZScheduler
+        focusFinderZScheduler = new FocusFinderZScheduler(lightSheetIndex, mCameraChoice.get(), mControlPlaneIndexVariable.get());
+    focusFinderZScheduler.setMicroscope(pCopilotDevice.getXWingMicroscope());
+    focusFinderZScheduler.initialize();
+    focusFinderZScheduler.enqueue(0);
+
+    FocusFinderAlphaByVariationScheduler
+        focusFinderAlphaByVariationScheduler = new FocusFinderAlphaByVariationScheduler(lightSheetIndex, mCameraChoice.get(), mControlPlaneIndexVariable.get());
+    focusFinderAlphaByVariationScheduler.setMicroscope(pCopilotDevice.getXWingMicroscope());
+    focusFinderAlphaByVariationScheduler.initialize();
+    focusFinderAlphaByVariationScheduler.enqueue(0);
   }
 
   Timeline mTimeline = null;
@@ -522,7 +551,7 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
                                                       .getImage(
                                                           mCameraChoice
                                                               .get(),
-                                                          mBottomRightightSheet),
+                                                          mBottomRightLightSheet),
                                                   mCalibrationImagerDevice
                                                       .getImage(
                                                           mCameraChoice

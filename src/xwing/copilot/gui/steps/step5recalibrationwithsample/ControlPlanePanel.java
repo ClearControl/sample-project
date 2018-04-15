@@ -25,6 +25,7 @@ public class ControlPlanePanel extends CustomGridPane
   int mPanelWidth = 60;
 
   Button mCopyToImageJButton;
+  Button mAutoInitButton;
 
 
   public ControlPlanePanel(InterpolatedAcquisitionState pInterpolatedAcquisitionState, Variable<Integer> pControlPlaneIndexVariable, int pLightSheetIndex) {
@@ -40,6 +41,12 @@ public class ControlPlanePanel extends CustomGridPane
 
     addDOFButtons(LightSheetDOF.IZ, pControlPlaneIndexVariable, pLightSheetIndex, lDeltaZ);
     addDOFButtons(LightSheetDOF.IA, pControlPlaneIndexVariable, pLightSheetIndex, lDeltaA);
+
+    mAutoInitButton = new Button("Auto");
+    mAutoInitButton.setMaxWidth(mPanelWidth);
+    add(mAutoInitButton, 0, mRow);
+    mRow++;
+
 
     mCopyToImageJButton = new Button("I");
     mCopyToImageJButton.setMaxWidth(mPanelWidth);
@@ -119,4 +126,10 @@ public class ControlPlanePanel extends CustomGridPane
   {
     mCopyToImageJButton.setOnAction(pOpenExternallyAction);
   }
+
+  public void setAutoInitAction(EventHandler<ActionEvent> pOpenExternallyAction)
+  {
+    mAutoInitButton.setOnAction(pOpenExternallyAction);
+  }
+
 }
