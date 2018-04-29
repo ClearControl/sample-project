@@ -49,21 +49,10 @@ public class XWingGui extends LightSheetMicroscopeGUI
     addGroovyScripting("lsm");
     addJythonScripting("lsm");
 
-    addPanelMappingEntry(KCubeDevice.class,
-                         KCubePane.class,
-                         MicroscopeNodeType.Stage);
-
-    addPanelMappingEntry(BasicThreeAxesStageInterface.class,
-                         BasicThreeAxesStagePanel.class,
-                         MicroscopeNodeType.Stage);
-
     addPanelMappingEntry(AdaptiveZScheduler.class,
-                         AdaptiveZSchedulerPanel.class,
-                         MicroscopeNodeType.AdaptiveOptics);
+            AdaptiveZSchedulerPanel.class,
+            MicroscopeNodeType.AdaptiveOptics);
 
-    addPanelMappingEntry(BasicThreeAxesStageScheduler.class,
-                         BasicThreeAxesStageSchedulerPanel.class,
-                         MicroscopeNodeType.Stage);
 
     addPanelMappingEntry(FastImageDevice.class, FastImageDevicePanel.class, MicroscopeNodeType.Acquisition);
 

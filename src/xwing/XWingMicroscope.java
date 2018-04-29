@@ -279,20 +279,6 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
     super.addSimulatedDevices(pDummySimulation, pXYZRStage, pSharedLightSheetControl, pSimulatorDevice);
 
 
-    {
-      //KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
-      //addDevice(0, lKCubeDeviceFactory);
-      //addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "I3B")); // XWing LS3 beta angle
-
-      BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new SimulatedThreeAxesStageDevice();
-
-      addDevice(0, lBasicThreeAxesStageInterface);
-
-      BasicThreeAxesStageScheduler lBasicThreeAxesStageScheduler = new BasicThreeAxesStageScheduler(lBasicThreeAxesStageInterface);
-      addDevice(0, lBasicThreeAxesStageScheduler);
-
-
-    }
 
     // setup adaptators
     //{
