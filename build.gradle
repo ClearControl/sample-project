@@ -70,7 +70,7 @@ def getVersionName = {
 
 sourceCompatibility = 1.8
 group = 'net.clearcontrol'
-version = "1.0.22" //getVersionName()
+version = "1.0.23" //getVersionName()
 
 test
 {
@@ -97,17 +97,12 @@ dependencies
     // SpimCAT:
     compile ('de.mpicbg.rhaase:postprocessing-utilities:0.2.7')  {transitive= true; changing= true}
 
-
-  // Thorlabs K-cube control:
-    compile ('net.clearcontrol:aptj:0.0.2-RH')      {transitive= true; changing= true}
-
-
     // FastFuse:
     compile ('net.clearcontrol:fastfuse:0.6.4')      {transitive= true; changing= true}
 
     // ClearControl:
     compile ('net.clearvolume:cleargl:2.0.4')
-    compile ('net.clearcontrol:clearcontrol-lightsheet:1.24.0')      {transitive= true; changing= true}
+    compile ('net.clearcontrol:clearcontrol-lightsheet:1.24.2')      {transitive= true; changing= true}
     compile ('net.clearcontrol:clearclij:0.2.8')
 
 
