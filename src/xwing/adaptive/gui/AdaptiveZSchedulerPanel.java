@@ -7,7 +7,6 @@ import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.file.VariableFileChooser;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
-import clearcontrol.microscope.lightsheet.spatialphasemodulation.scheduler.MirrorModeScheduler;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import xwing.adaptive.AdaptiveZScheduler;
