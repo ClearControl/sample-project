@@ -3,11 +3,10 @@ package xwing.adaptive;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
-import clearcontrol.microscope.lightsheet.LightSheetDOF;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.component.scheduler.SchedulerBase;
-import clearcontrol.microscope.lightsheet.component.scheduler.SchedulerInterface;
+import clearcontrol.microscope.lightsheet.instructions.LightSheetMicroscopeInstructionBase;
 import clearcontrol.microscope.lightsheet.postprocessing.measurements.DiscreteConsinusTransformEntropyPerSliceEstimator;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.stack.OffHeapPlanarStack;
@@ -27,11 +26,9 @@ import java.util.concurrent.TimeoutException;
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * January 2018
  */
-public class AdaptiveZScheduler extends SchedulerBase implements
-                                                      SchedulerInterface,
+public class AdaptiveZInstruction extends LightSheetMicroscopeInstructionBase implements
                                                       LoggingFeature
 {
-  private LightSheetMicroscopeInterface mLightSheetMicroscope;
 
   private final BoundedVariable<Integer> mNumberOfSamplesVariable =
       new BoundedVariable<Integer>("NumberOfSamples", 11, 3, Integer.MAX_VALUE, 1);
@@ -53,31 +50,20 @@ public class AdaptiveZScheduler extends SchedulerBase implements
   private Variable<Boolean> mStartWithCamera0 = new Variable<Boolean>("Stack starts with camera 0", false);
 
 
-  public AdaptiveZScheduler()
+  public AdaptiveZInstruction(LightSheetMicroscope pLightSheetMicroscope)
   {
-    super("Adaptation Z scheduler");
+    super("Adaptation Z scheduler", pLightSheetMicroscope);
   }
 
   @Override public boolean initialize()
   {
-    if (mMicroscope instanceof LightSheetMicroscopeInterface) {
-      mLightSheetMicroscope = (LightSheetMicroscopeInterface) mMicroscope;
-    } else {
-      warning("Error: I only support lightsheet microscopes!");
-      return false;
-    }
-
     return true;
   }
 
   @Override public boolean enqueue(long pTimePoint)
   {
-    if (!(mMicroscope instanceof LightSheetMicroscopeInterface)) {
-      warning("Error: I only support lightsheet microscopes!");
-      return false;
-    }
 
-    int lNumberOfControlPlanes = ((InterpolatedAcquisitionState)mLightSheetMicroscope.getAcquisitionStateManager().getCurrentState()).getNumberOfControlPlanes();
+    int lNumberOfControlPlanes = ((InterpolatedAcquisitionState)getLightSheetMicroscope().getAcquisitionStateManager().getCurrentState()).getNumberOfControlPlanes();
     int lControlPlane = (int)(pTimePoint % lNumberOfControlPlanes);
 
     int lDetectionArmIndex;
@@ -128,12 +114,12 @@ public class AdaptiveZScheduler extends SchedulerBase implements
     logQuality("t" + pTimePoint + "C" + lDetectionArmIndex + "_mae30", mae30);
     logQuality("t" + pTimePoint + "C" + lDetectionArmIndex + "_mae03", mae03);
 
-
-
-
-
-
     return true;
+  }
+
+  @Override
+  public AdaptiveZInstruction copy() {
+    return new AdaptiveZInstruction(getLightSheetMicroscope());
   }
 
   private double[] getMAEOfPlaneToStack(OffHeapPlanarStack pStack1, int pPlaneIndex1, OffHeapPlanarStack pStack2) {
@@ -213,12 +199,12 @@ public class AdaptiveZScheduler extends SchedulerBase implements
 
   private OffHeapPlanarStack acquireStack(int pControlPlaneIndex, int pLightSheetIndex, int pDetectionArmIndex) {
     info("acquire stack CPI " + pControlPlaneIndex + " L" + pLightSheetIndex + " D" + pDetectionArmIndex   );
-    LightSheetMicroscopeQueue lQueue = mLightSheetMicroscope.requestQueue();
+    LightSheetMicroscopeQueue lQueue = getLightSheetMicroscope().requestQueue();
 
 
     InterpolatedAcquisitionState
         lAcquisitionState =
-        (InterpolatedAcquisitionState)mLightSheetMicroscope.getAcquisitionStateManager()
+        (InterpolatedAcquisitionState)getLightSheetMicroscope().getAcquisitionStateManager()
                                                            .getCurrentState();
 
 
@@ -271,11 +257,11 @@ public class AdaptiveZScheduler extends SchedulerBase implements
 
     lQueue.addMetaDataEntry(MetaDataChannel.Channel, "NoDisplay");
 
-    mLightSheetMicroscope.useRecycler("adaptation", 1, 4, 4);
+    getLightSheetMicroscope().useRecycler("adaptation", 1, 4, 4);
     final Boolean lPlayQueueAndWait;
     try
     {
-      lPlayQueueAndWait = mLightSheetMicroscope.playQueueAndWaitForStacks(lQueue,
+      lPlayQueueAndWait = getLightSheetMicroscope().playQueueAndWaitForStacks(lQueue,
                                                       100 + lQueue.getQueueLength(),
                                                                           TimeUnit.SECONDS);
     }
@@ -301,7 +287,7 @@ public class AdaptiveZScheduler extends SchedulerBase implements
     }
 
     OffHeapPlanarStack lResultingStack =
-        (OffHeapPlanarStack) mLightSheetMicroscope.getCameraStackVariable(pDetectionArmIndex)
+        (OffHeapPlanarStack) getLightSheetMicroscope().getCameraStackVariable(pDetectionArmIndex)
                                                   .get();
 
     if (lResultingStack.getDepth() != lNumberOfExpectedImages)

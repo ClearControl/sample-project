@@ -2,15 +2,13 @@ package clearcontrol.microscope.lightsheet.imaging;
 
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
-import clearcontrol.microscope.lightsheet.imaging.interleaved.InterleavedAcquisitionScheduler;
-import clearcontrol.microscope.lightsheet.imaging.opticsprefused.OpticsPrefusedAcquisitionScheduler;
-import clearcontrol.microscope.lightsheet.imaging.sequential.SequentialAcquisitionScheduler;
+import clearcontrol.microscope.lightsheet.imaging.interleaved.InterleavedAcquisitionInstruction;
+import clearcontrol.microscope.lightsheet.imaging.opticsprefused.OpticsPrefusedAcquisitionInstruction;
+import clearcontrol.microscope.lightsheet.imaging.sequential.SequentialAcquisitionInstruction;
 import clearcontrol.microscope.lightsheet.processor.LightSheetFastFusionProcessor;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import clearcontrol.microscope.lightsheet.timelapse.*;
 import clearcontrol.microscope.state.AcquisitionType;
-import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 
 /**
@@ -58,21 +56,20 @@ public class DirectFusedImageStack implements DirectImageInterface, LoggingFeatu
     lProcessor.getEngine().reset(true);
 
 
-    AbstractAcquistionScheduler lAcquisitionScheduler;
+    AbstractAcquistionInstruction lAcquisitionScheduler;
     switch (mAcquisitionType) {
     case TimelapseSequential:
-      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(SequentialAcquisitionScheduler.class, 0);
+      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(SequentialAcquisitionInstruction.class, 0);
       break;
     case TimeLapseOpticallyCameraFused:
-      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(OpticsPrefusedAcquisitionScheduler.class, 0);
+      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(OpticsPrefusedAcquisitionInstruction.class, 0);
       break;
     case TimeLapseInterleaved:
     default:
-      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(InterleavedAcquisitionScheduler.class, 0);
+      lAcquisitionScheduler = mLightSheetMicroscope.getDevice(InterleavedAcquisitionInstruction.class, 0);
       break;
     }
 
-    lAcquisitionScheduler.setMicroscope(mLightSheetMicroscope);
     lAcquisitionScheduler.initialize();
     lAcquisitionScheduler.enqueue(0);
 

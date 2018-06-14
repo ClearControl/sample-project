@@ -2,9 +2,9 @@ package xwing.multicolor;
 
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
-import clearcontrol.microscope.lightsheet.LightSheetMicroscopeInterface;
-import clearcontrol.microscope.lightsheet.component.scheduler.SchedulerBase;
-import clearcontrol.microscope.lightsheet.component.scheduler.SchedulerInterface;
+import clearcontrol.instructions.InstructionInterface;
+import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.instructions.LightSheetMicroscopeInstructionBase;
 
 import java.util.ArrayList;
 
@@ -12,11 +12,9 @@ import java.util.ArrayList;
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
  * January 2018
  */
-public class MultiChannelScheduler extends SchedulerBase implements
-                                                         SchedulerInterface,
+public class MultiChannelInstruction extends LightSheetMicroscopeInstructionBase implements
                                                          LoggingFeature
 {
-  private LightSheetMicroscopeInterface mLightSheetMicroscope;
 
   boolean mInitialized = false;
   ArrayList<Double> mLaserPower = new ArrayList<Double>();
@@ -25,9 +23,9 @@ public class MultiChannelScheduler extends SchedulerBase implements
    * INstanciates a virtual device with a given name
    *
    */
-  public MultiChannelScheduler()
+  public MultiChannelInstruction(LightSheetMicroscope pLightSheetMicroscope)
   {
-    super("Multichannel scheduler");
+    super("Multichannel scheduler", pLightSheetMicroscope);
   }
 
 
@@ -41,15 +39,8 @@ public class MultiChannelScheduler extends SchedulerBase implements
   @Override public boolean enqueue(long pTimePoint)
   {
 
-    if (mMicroscope instanceof LightSheetMicroscopeInterface) {
-      mLightSheetMicroscope = (LightSheetMicroscopeInterface) mMicroscope;
-    } else {
-      warning("Error: I only support lightsheet microscopes!");
-      return false;
-    }
-
     ArrayList<LaserDeviceInterface> lLaserList =
-        mLightSheetMicroscope.getDevices(LaserDeviceInterface.class);
+        getLightSheetMicroscope().getDevices(LaserDeviceInterface.class);
 
     if (!mInitialized) {
       for (LaserDeviceInterface lLaserDeviceInterface : lLaserList) {
@@ -82,5 +73,10 @@ public class MultiChannelScheduler extends SchedulerBase implements
       return false;
     }
     return false;
+  }
+
+  @Override
+  public MultiChannelInstruction copy() {
+    return new MultiChannelInstruction(getLightSheetMicroscope());
   }
 }

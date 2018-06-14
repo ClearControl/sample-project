@@ -6,8 +6,8 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
-import clearcontrol.devices.lasers.schedulers.LaserOnOffScheduler;
-import clearcontrol.devices.lasers.schedulers.LaserPowerScheduler;
+import clearcontrol.devices.lasers.instructions.LaserOnOffInstruction;
+import clearcontrol.devices.lasers.instructions.LaserPowerInstruction;
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
@@ -17,10 +17,9 @@ import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
 import clearcontrol.devices.stages.hub.StageHubDevice;
 import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
 import clearcontrol.devices.stages.kcube.impl.KCubeThreeAxesStageDevice;
-import clearcontrol.devices.stages.kcube.scheduler.BasicThreeAxesStageScheduler;
-import clearcontrol.devices.stages.kcube.sim.SimulatedThreeAxesStageDevice;
+import clearcontrol.devices.stages.kcube.instructions.BasicThreeAxesStageInstruction;
+import clearcontrol.microscope.lightsheet.adaptive.instructions.AdaptationInstruction;
 import clearcontrol.microscope.lightsheet.adaptive.modules.*;
-import clearcontrol.microscope.lightsheet.adaptive.schedulers.AdaptationScheduler;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
@@ -28,7 +27,7 @@ import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDev
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import clearcontrol.devices.stages.kcube.impl.KCubeDeviceFactory;
-import xwing.adaptive.AdaptiveZScheduler;
+import xwing.adaptive.AdaptiveZInstruction;
 import xwing.copilot.CopilotDevice;
 import xwing.copilot.gui.steps.StepFactoryInterface;
 import xwing.copilot.gui.steps.step1manualcalibration.Step1ManualCalibrationFactory;
@@ -38,7 +37,7 @@ import xwing.copilot.gui.steps.step4automaticcalibrationwithsample.Step4Automati
 import xwing.copilot.gui.steps.step5recalibrationwithsample.Step5RecalibrationWithSampleFactory;
 import xwing.fastimage.FastImageDevice;
 import xwing.imaging.CalibrationImagerDevice;
-import xwing.multicolor.MultiChannelScheduler;
+import xwing.multicolor.MultiChannelInstruction;
 
 import java.util.ArrayList;
 
@@ -99,7 +98,7 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new KCubeThreeAxesStageDevice("Stage", lXStage, lYStage, lZStage);
       addDevice(0, lBasicThreeAxesStageInterface);
 
-      BasicThreeAxesStageScheduler lBasicThreeAxesStageScheduler = new BasicThreeAxesStageScheduler(lBasicThreeAxesStageInterface);
+      BasicThreeAxesStageInstruction lBasicThreeAxesStageScheduler = new BasicThreeAxesStageInstruction(lBasicThreeAxesStageInterface);
       addDevice(0, lBasicThreeAxesStageScheduler);
 
       addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "Illumination0BAngleKCubeStage")); // XWing LS0 beta angle
@@ -119,16 +118,16 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
                                                new OmicronLaserDevice(0);
       addDevice(0, lLaserDevice488);
 
-      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 0.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 1.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 5.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 10.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 20.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 50.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice488, 100.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice488, 0.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice488, 1.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice488, 5.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice488, 10.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice488, 20.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice488, 50.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice488, 100.0));
 
-      addDevice(0, new LaserOnOffScheduler(lLaserDevice488, true));
-      addDevice(0, new LaserOnOffScheduler(lLaserDevice488, false));
+      addDevice(0, new LaserOnOffInstruction(lLaserDevice488, true));
+      addDevice(0, new LaserOnOffInstruction(lLaserDevice488, false));
 
 
 
@@ -138,16 +137,16 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
                                                                     1);
       addDevice(1, lLaserDevice594);/**/
 
-      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 0.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 1.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 5.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 10.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 20.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 50.0));
-      addDevice(0, new LaserPowerScheduler(lLaserDevice594, 100.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 0.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 1.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 5.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 10.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 20.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 50.0));
+      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 100.0));
 
-      addDevice(0, new LaserOnOffScheduler(lLaserDevice594, true));
-      addDevice(0, new LaserOnOffScheduler(lLaserDevice594, false));
+      addDevice(0, new LaserOnOffInstruction(lLaserDevice594, true));
+      addDevice(0, new LaserOnOffInstruction(lLaserDevice594, false));
 
     }
 
@@ -282,7 +281,7 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
 
     // setup adaptators
     //{
-    //  AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
+    //  AdaptiveZInstruction lAdaptiveZScheduler = new AdaptiveZInstruction();
     //  addDevice(0, lAdaptiveZScheduler);
     //}
 
@@ -295,44 +294,44 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
 
     // setup adaptators/schedulers
     {
-      AdaptiveZScheduler lAdaptiveZScheduler = new AdaptiveZScheduler();
-      addDevice(0, lAdaptiveZScheduler);
+      AdaptiveZInstruction lAdaptiveZInstruction = new AdaptiveZInstruction(this);
+      addDevice(0, lAdaptiveZInstruction);
     }
 
     {
-      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Focus Z",
-                                                                         AdaptationZ.class);
+      AdaptationInstruction lAdaptationScheduler = new AdaptationInstruction("Adaptation: Focus Z",
+                                                                         AdaptationZ.class, this);
       addDevice(0, lAdaptationScheduler);
     }
     {
-      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Focus Z with manual detection arm selection",
-                                                                         AdaptationZManualDetectionArmSelection.class);
+      AdaptationInstruction lAdaptationScheduler = new AdaptationInstruction("Adaptation: Focus Z with manual detection arm selection",
+                                                                         AdaptationZManualDetectionArmSelection.class, this);
       addDevice(0, lAdaptationScheduler);
     }
     {
-      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Focus Z with sliding window detection arm selection",
-                                                                         AdaptationZSlidingWindowDetectionArmSelection.class);
+      AdaptationInstruction lAdaptationScheduler = new AdaptationInstruction("Adaptation: Focus Z with sliding window detection arm selection",
+                                                                         AdaptationZSlidingWindowDetectionArmSelection.class, this);
       addDevice(0, lAdaptationScheduler);
     }
     {
-      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Lightsheet angle alpha",
-                                                                         AdaptationA.class);
+      AdaptationInstruction lAdaptationScheduler = new AdaptationInstruction("Adaptation: Lightsheet angle alpha",
+                                                                         AdaptationA.class, this);
       addDevice(0, lAdaptationScheduler);
     }
     {
-      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Power",
-                                                                         AdaptationP.class);
+      AdaptationInstruction lAdaptationScheduler = new AdaptationInstruction("Adaptation: Power",
+                                                                         AdaptationP.class, this);
       addDevice(0, lAdaptationScheduler);
     }
     {
-      AdaptationScheduler lAdaptationScheduler = new AdaptationScheduler("Adaptation: Lightsheet X position",
-                                                                         AdaptationX.class);
+      AdaptationInstruction lAdaptationScheduler = new AdaptationInstruction("Adaptation: Lightsheet X position",
+                                                                         AdaptationX.class, this);
       addDevice(0, lAdaptationScheduler);
     }
 
     {
-      MultiChannelScheduler lMultiChannelScheduler = new MultiChannelScheduler();
-      addDevice(0, lMultiChannelScheduler);
+      MultiChannelInstruction lMultiChannelInstruction = new MultiChannelInstruction(this);
+      addDevice(0, lMultiChannelInstruction);
     }
 
     // initialize copilot

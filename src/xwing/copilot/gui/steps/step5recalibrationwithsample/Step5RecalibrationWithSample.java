@@ -10,8 +10,8 @@ import clearcontrol.gui.jfx.custom.image.ImagePane;
 import clearcontrol.gui.jfx.custom.image.RGBImgImage;
 import clearcontrol.gui.jfx.var.checkbox.VariableCheckBox;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
-import clearcontrol.microscope.lightsheet.adaptive.schedulers.FocusFinderAlphaByVariationScheduler;
-import clearcontrol.microscope.lightsheet.adaptive.schedulers.FocusFinderZScheduler;
+import clearcontrol.microscope.lightsheet.adaptive.instructions.FocusFinderAlphaByVariationInstruction;
+import clearcontrol.microscope.lightsheet.adaptive.instructions.FocusFinderZInstruction;
 import clearcontrol.microscope.lightsheet.state.InterpolatedAcquisitionState;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -435,15 +435,13 @@ public class Step5RecalibrationWithSample extends CustomGridPane implements
 
   private void initializeFocusZandAlpha(CopilotDevice pCopilotDevice, int lightSheetIndex)
   {
-    FocusFinderZScheduler
-        focusFinderZScheduler = new FocusFinderZScheduler(lightSheetIndex, mCameraChoice.get(), mControlPlaneIndexVariable.get());
-    focusFinderZScheduler.setMicroscope(pCopilotDevice.getXWingMicroscope());
+    FocusFinderZInstruction
+        focusFinderZScheduler = new FocusFinderZInstruction(lightSheetIndex, mCameraChoice.get(), mControlPlaneIndexVariable.get(), pCopilotDevice.getXWingMicroscope());
     focusFinderZScheduler.initialize();
     focusFinderZScheduler.enqueue(0);
 
-    FocusFinderAlphaByVariationScheduler
-        focusFinderAlphaByVariationScheduler = new FocusFinderAlphaByVariationScheduler(lightSheetIndex, mCameraChoice.get(), mControlPlaneIndexVariable.get());
-    focusFinderAlphaByVariationScheduler.setMicroscope(pCopilotDevice.getXWingMicroscope());
+    FocusFinderAlphaByVariationInstruction
+        focusFinderAlphaByVariationScheduler = new FocusFinderAlphaByVariationInstruction(lightSheetIndex, mCameraChoice.get(), mControlPlaneIndexVariable.get(), pCopilotDevice.getXWingMicroscope());
     focusFinderAlphaByVariationScheduler.initialize();
     focusFinderAlphaByVariationScheduler.enqueue(0);
   }

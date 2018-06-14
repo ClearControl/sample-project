@@ -9,7 +9,7 @@ import clearcontrol.gui.jfx.var.file.VariableFileChooser;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import xwing.adaptive.AdaptiveZScheduler;
+import xwing.adaptive.AdaptiveZInstruction;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
@@ -18,7 +18,7 @@ import xwing.adaptive.AdaptiveZScheduler;
 public class AdaptiveZSchedulerPanel extends CustomGridPane
     implements LoggingFeature
 {
-  public AdaptiveZSchedulerPanel(AdaptiveZScheduler pAdaptiveZScheduler) {
+  public AdaptiveZSchedulerPanel(AdaptiveZInstruction pAdaptiveZInstruction) {
 
 
     int lRow = 0;
@@ -31,7 +31,7 @@ public class AdaptiveZSchedulerPanel extends CustomGridPane
     {
       VariableFileChooser lRootFolderChooser =
           new VariableFileChooser("Folder:",
-                                  pAdaptiveZScheduler.getRootFolderVariable(),
+                                  pAdaptiveZInstruction.getRootFolderVariable(),
                                   true);
       GridPane.setColumnSpan(lRootFolderChooser.getLabel(),
                              Integer.valueOf(1));
@@ -48,7 +48,7 @@ public class AdaptiveZSchedulerPanel extends CustomGridPane
 
     {
       BoundedVariable<Integer>
-          lNumberOfSamplesVariable = pAdaptiveZScheduler.getNumberOfSamplesVariable();
+          lNumberOfSamplesVariable = pAdaptiveZInstruction.getNumberOfSamplesVariable();
       NumberVariableTextField<Integer> lField =
           new NumberVariableTextField<Integer>(lNumberOfSamplesVariable.getName(),
                                                lNumberOfSamplesVariable,
@@ -62,7 +62,7 @@ public class AdaptiveZSchedulerPanel extends CustomGridPane
 
     {
       BoundedVariable<Integer>
-          lSwitchCameraAtControlPlaneVariable = pAdaptiveZScheduler.getSwitchCameraControlPlaneIndex();
+          lSwitchCameraAtControlPlaneVariable = pAdaptiveZInstruction.getSwitchCameraControlPlaneIndex();
       NumberVariableTextField<Integer> lField =
           new NumberVariableTextField<Integer>(lSwitchCameraAtControlPlaneVariable.getName(),
                                                lSwitchCameraAtControlPlaneVariable,
@@ -76,7 +76,7 @@ public class AdaptiveZSchedulerPanel extends CustomGridPane
 
     {
       BoundedVariable<Double>
-          lDeltaZVariable = pAdaptiveZScheduler.getDeltaZVariable();
+          lDeltaZVariable = pAdaptiveZInstruction.getDeltaZVariable();
       NumberVariableTextField<Double> lField =
           new NumberVariableTextField<Double>(lDeltaZVariable.getName(),
                                                lDeltaZVariable,
@@ -92,7 +92,7 @@ public class AdaptiveZSchedulerPanel extends CustomGridPane
 
     {
       BoundedVariable<Double>
-          lLaserPowerVariable = pAdaptiveZScheduler.getLaserPowerVariable();
+          lLaserPowerVariable = pAdaptiveZInstruction.getLaserPowerVariable();
       NumberVariableTextField<Double> lField =
           new NumberVariableTextField<Double>(lLaserPowerVariable.getName(),
                                                lLaserPowerVariable,
@@ -108,7 +108,7 @@ public class AdaptiveZSchedulerPanel extends CustomGridPane
 
     {
       BoundedVariable<Double>
-          lExposureTimeVariable = pAdaptiveZScheduler.getExposureInSecondsVariable();
+          lExposureTimeVariable = pAdaptiveZInstruction.getExposureInSecondsVariable();
       NumberVariableTextField<Double> lField =
           new NumberVariableTextField<Double>(lExposureTimeVariable.getName(),
                                               lExposureTimeVariable,
@@ -121,7 +121,7 @@ public class AdaptiveZSchedulerPanel extends CustomGridPane
     }
 
     {
-      Variable<Boolean> lStackStartsWithCamera0 = pAdaptiveZScheduler.getStartWithCamera0();
+      Variable<Boolean> lStackStartsWithCamera0 = pAdaptiveZInstruction.getStartWithCamera0();
       VariableCheckBox lCheckBox = new VariableCheckBox(lStackStartsWithCamera0.getName(), lStackStartsWithCamera0);
 
       this.add(lCheckBox.getLabel(), 0, lRow);

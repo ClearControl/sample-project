@@ -1,16 +1,10 @@
 package xwing.gui;
 
-import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
-import clearcontrol.devices.stages.kcube.gui.BasicThreeAxesStagePanel;
-import clearcontrol.devices.stages.kcube.scheduler.BasicThreeAxesStageScheduler;
-import clearcontrol.devices.stages.kcube.scheduler.gui.BasicThreeAxesStageSchedulerPanel;
 import clearcontrol.microscope.gui.halcyon.MicroscopeNodeType;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import javafx.stage.Stage;
-import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
-import clearcontrol.devices.stages.kcube.gui.KCubePane;
-import xwing.adaptive.AdaptiveZScheduler;
+import xwing.adaptive.AdaptiveZInstruction;
 import xwing.adaptive.gui.AdaptiveZSchedulerPanel;
 import xwing.copilot.CopilotDevice;
 import xwing.copilot.gui.CopilotDevicePanel;
@@ -49,7 +43,7 @@ public class XWingGui extends LightSheetMicroscopeGUI
     addGroovyScripting("lsm");
     addJythonScripting("lsm");
 
-    addPanelMappingEntry(AdaptiveZScheduler.class,
+    addPanelMappingEntry(AdaptiveZInstruction.class,
             AdaptiveZSchedulerPanel.class,
             MicroscopeNodeType.AdaptiveOptics);
 
