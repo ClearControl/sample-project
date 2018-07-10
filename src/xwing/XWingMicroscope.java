@@ -216,7 +216,7 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       for (int c = 0; c < pNumberOfDetectionArms; c++)
       {
         final DetectionArm lDetectionArm = new DetectionArm("D" + c);
-        lDetectionArm.getPixelSizeInMicrometerVariable().set(0.26);
+        lDetectionArm.getPixelSizeInMicrometerVariable().set(getDevice(StackCameraDeviceInterface.class, c).getPixelSizeInMicrometersVariable().get());
 
         addDevice(c, lDetectionArm);
       }
