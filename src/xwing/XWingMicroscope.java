@@ -22,11 +22,14 @@ import clearcontrol.microscope.lightsheet.adaptive.instructions.AdaptationInstru
 import clearcontrol.microscope.lightsheet.adaptive.modules.*;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
+import clearcontrol.microscope.lightsheet.component.lightsheet.instructions.ChangeLightSheetHeightInstruction;
+import clearcontrol.microscope.lightsheet.component.lightsheet.instructions.ChangeLightSheetWidthInstruction;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import clearcontrol.devices.stages.kcube.impl.KCubeDeviceFactory;
+import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
 import xwing.adaptive.AdaptiveZInstruction;
 import xwing.copilot.CopilotDevice;
 import xwing.copilot.gui.steps.StepFactoryInterface;
@@ -290,6 +293,9 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
   @Override
   public void addStandardDevices(int pNumberOfControlPlanes) {
     super.addStandardDevices(pNumberOfControlPlanes);
+
+    LightSheetTimelapse timelapse = getTimelapse();
+    timelapse.getListOfActivatedSchedulers().add(0, new ChangeLightSheetWidthInstruction(this, 0.45));
 
 
     // setup adaptators/schedulers
