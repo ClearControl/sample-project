@@ -1,5 +1,6 @@
 package clearcontrol.microscope.lightsheet.imaging;
 
+import clearcl.imagej.ClearCLIJ;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscopeQueue;
@@ -149,10 +150,9 @@ public abstract class DirectImageBase implements DirectImageInterface, LoggingFe
     if (mResultImage == null) {
       return null;
     }
+    ClearCLIJ clij = ClearCLIJ.getInstance();
 
-    StackToImgConverter<UnsignedShortType>
-        lStackToImgConverter = new StackToImgConverter<UnsignedShortType>(mResultImage);
-    RandomAccessibleInterval<UnsignedShortType> img = lStackToImgConverter.getRandomAccessibleInterval();
+    RandomAccessibleInterval<UnsignedShortType> img = clij.converter(mResultImage).getRandomAccessibleInterval();
 
     return img;
   }
