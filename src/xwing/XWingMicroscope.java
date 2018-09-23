@@ -6,8 +6,7 @@ import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
 import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
-import clearcontrol.devices.lasers.instructions.LaserOnOffInstruction;
-import clearcontrol.devices.lasers.instructions.LaserPowerInstruction;
+import clearcontrol.devices.lasers.instructions.*;
 import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
 import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
@@ -132,6 +131,11 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, new LaserOnOffInstruction(lLaserDevice488, true));
       addDevice(0, new LaserOnOffInstruction(lLaserDevice488, false));
 
+      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice488, true));
+      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice488, false));
+      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice488, true));
+      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice488, false));
+      addDevice(0, new ChangeLaserPowerInstruction(lLaserDevice488));
 
 
       final CoboltLaserDevice lLaserDevice594 =
@@ -151,6 +155,12 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, new LaserOnOffInstruction(lLaserDevice594, true));
       addDevice(0, new LaserOnOffInstruction(lLaserDevice594, false));
 
+
+      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice594, true));
+      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice594, false));
+      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice594, true));
+      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice594, false));
+      addDevice(0, new ChangeLaserPowerInstruction(lLaserDevice594));
     }
 
     // Setting up Stage:
