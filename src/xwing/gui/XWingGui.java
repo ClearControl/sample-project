@@ -6,10 +6,6 @@ import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import javafx.stage.Stage;
 import xwing.adaptive.AdaptiveZInstruction;
 import xwing.adaptive.gui.AdaptiveZSchedulerPanel;
-import xwing.copilot.CopilotDevice;
-import xwing.copilot.gui.CopilotDevicePanel;
-import xwing.fastimage.FastImageDevice;
-import xwing.fastimage.gui.FastImageDevicePanel;
 
 /**
  * XWing microscope GUI
@@ -47,10 +43,6 @@ public class XWingGui extends LightSheetMicroscopeGUI
             AdaptiveZSchedulerPanel.class,
             MicroscopeNodeType.AdaptiveOptics);
 
-
-    addPanelMappingEntry(FastImageDevice.class, FastImageDevicePanel.class, MicroscopeNodeType.Acquisition);
-
-    addPanelMappingEntry(CopilotDevice.class, CopilotDevicePanel.class, MicroscopeNodeType.Other);
 
   }
 
