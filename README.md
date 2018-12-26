@@ -23,12 +23,15 @@ Without gradle:
 ```
 
 ## Configure
-This part is significant. If this is your first time start with creating
-a folder `.clearcontrol` under the your user file on Windows OS (
-currently we are only have support for Windows due to depencies we have
-).
+This part is significant. If this is your first time with ClearControl 
+start with creating a folder `.clearcontrol` under the your user file 
+on Windows OS ( currently we are only have support for Windows due to 
+dependencies we have ), i.e. `C:\Users\YOURUSERNAME\.clearcontrol`.
 
-...
+Then create a new file in that folder with name `configuration.txt`. This
+file will be your main configuration file for your connected hardware.
+You can copy the content of `configuration.txt.hide` file as a starting
+point. For more details on writing configuration can be found here.
 
 ## Run
 
