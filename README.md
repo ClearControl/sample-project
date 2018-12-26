@@ -1,17 +1,45 @@
-# X-Scope #
+# Sample Microscope
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Sample microscope project for ClearControl environment. This project is
+the basis for all ClearControl tutorials.
 
-### How to build the project? ###
+## Get the project
+```bash
+git clone https://github.com/ClearControl/sample-project
+cd sample-project 
+```
 
-* Developing XWing
-To develop XWing using an IDE such as Intellij, just import the projects gradle.build file in your IDE.
+## Build
+You can build the project with or without gradle.
 
-* Building XWing-Executable
-Go to the command line, navigate to the folder where this file is located and run (suggested OS: Windows 7 or 10):
+With gradle:
+```bash
+gradle build
+```
 
-gradlew jfxnative
+Without gradle:
+```bash
+./gradlew build
+```
 
-Afterwards, you will find an XWing.exe in this sub directory:
+## Configure
+This part is significant. If this is your first time start with creating
+a folder `.clearcontrol` under the your user file on Windows OS (
+currently we are only have support for Windows due to depencies we have
+).
 
-build\jfx\native\XWing
+...
+
+## Run
+
+Run the `SampleMain` class as an application. Then a window will pop up
+with several options to start the software:
+
+- options image here
+
+Then depending on your choice main control window will be loaded:
+
+- loaded software image here
+
+<hr>
+For more check the further detailed tutorials.

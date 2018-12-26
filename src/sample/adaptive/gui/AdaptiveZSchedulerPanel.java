@@ -1,4 +1,4 @@
-package xwing.adaptive.gui;
+package sample.adaptive.gui;
 
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
@@ -9,7 +9,7 @@ import clearcontrol.gui.jfx.var.file.VariableFileChooser;
 import clearcontrol.gui.jfx.var.textfield.NumberVariableTextField;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import xwing.adaptive.AdaptiveZInstruction;
+import sample.adaptive.AdaptiveZInstruction;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)

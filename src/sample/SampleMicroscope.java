@@ -1,36 +1,23 @@
-package xwing;
+package sample;
 
 import clearcl.ClearCLContext;
-import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
-import clearcontrol.devices.lasers.devices.cobolt.CoboltLaserDevice;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
 import clearcontrol.devices.lasers.instructions.*;
-import clearcontrol.devices.signalamp.devices.srs.SIM900MainframeDevice;
-import clearcontrol.devices.signalamp.devices.srs.SIM983ScalingAmplifierDevice;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
-import clearcontrol.devices.stages.BasicThreeAxesStageInterface;
-import clearcontrol.devices.stages.StageType;
-import clearcontrol.devices.stages.devices.tst.TSTStageDevice;
-import clearcontrol.devices.stages.hub.StageHubDevice;
-import clearcontrol.devices.stages.kcube.impl.KCubeDevice;
-import clearcontrol.devices.stages.kcube.impl.KCubeThreeAxesStageDevice;
-import clearcontrol.devices.stages.kcube.instructions.BasicThreeAxesStageInstruction;
 import clearcontrol.microscope.lightsheet.adaptive.instructions.AdaptationInstruction;
 import clearcontrol.microscope.lightsheet.adaptive.modules.*;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
-import clearcontrol.microscope.lightsheet.component.lightsheet.instructions.ChangeLightSheetHeightInstruction;
 import clearcontrol.microscope.lightsheet.component.lightsheet.instructions.ChangeLightSheetWidthInstruction;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
-import clearcontrol.devices.stages.kcube.impl.KCubeDeviceFactory;
 import clearcontrol.microscope.lightsheet.timelapse.LightSheetTimelapse;
-import xwing.adaptive.AdaptiveZInstruction;
-import xwing.multicolor.MultiChannelInstruction;
+import sample.adaptive.AdaptiveZInstruction;
+import sample.multicolor.MultiChannelInstruction;
 
 
 /**
@@ -38,7 +25,7 @@ import xwing.multicolor.MultiChannelInstruction;
  *
  * @author royer
  */
-public class XWingMicroscope extends SimulatedLightSheetMicroscope
+public class SampleMicroscope extends SimulatedLightSheetMicroscope
 {
 
   /**
@@ -51,9 +38,9 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
    * @param pThreadPoolSize
    *          thread pool size
    */
-  public XWingMicroscope(ClearCLContext pStackFusionContext,
-                         int pMaxStackProcessingQueueLength,
-                         int pThreadPoolSize)
+  public SampleMicroscope(ClearCLContext pStackFusionContext,
+                          int pMaxStackProcessingQueueLength,
+                          int pThreadPoolSize)
   {
     super("XWing",
           pStackFusionContext,
@@ -78,25 +65,25 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
 
     if (pUseStages)
     {
-      KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
-      addDevice(0, lKCubeDeviceFactory);
-      KCubeDevice lXStage = lKCubeDeviceFactory.createKCubeDevice(26000278, "XKCubeStage"); // XWing stage X-axis
-      KCubeDevice lYStage = lKCubeDeviceFactory.createKCubeDevice(26000298, "YKCubeStage"); // XWing stage Y-axis
-      KCubeDevice lZStage = lKCubeDeviceFactory.createKCubeDevice(26000299, "ZKCubeStage"); // XWing stage Z-axis
-      addDevice(0, lXStage);
-      addDevice(0, lYStage);
-      addDevice(0, lZStage);
-
-      BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new KCubeThreeAxesStageDevice("Stage", lXStage, lYStage, lZStage);
-      addDevice(0, lBasicThreeAxesStageInterface);
-
-      BasicThreeAxesStageInstruction lBasicThreeAxesStageScheduler = new BasicThreeAxesStageInstruction(lBasicThreeAxesStageInterface);
-      addDevice(0, lBasicThreeAxesStageScheduler);
-
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "Illumination0BAngleKCubeStage")); // XWing LS0 beta angle
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "Illumination1BAngleKCubeStage")); // XWing LS1 beta angle
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000317, "Illumination2BAngleKCubeStage")); // XWing LS2 beta angle
-      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "Illumination3BAngleKCubeStage")); // XWing LS3 beta angle
+//           KCubeDeviceFactory lKCubeDeviceFactory = KCubeDeviceFactory.getInstance();
+//      addDevice(0, lKCubeDeviceFactory);
+//      KCubeDevice lXStage = lKCubeDeviceFactory.createKCubeDevice(26000278, "XKCubeStage"); // XWing stage X-axis
+//      KCubeDevice lYStage = lKCubeDeviceFactory.createKCubeDevice(26000298, "YKCubeStage"); // XWing stage Y-axis
+//      KCubeDevice lZStage = lKCubeDeviceFactory.createKCubeDevice(26000299, "ZKCubeStage"); // XWing stage Z-axis
+//      addDevice(0, lXStage);
+//      addDevice(0, lYStage);
+//      addDevice(0, lZStage);
+//
+//      BasicThreeAxesStageInterface lBasicThreeAxesStageInterface = new KCubeThreeAxesStageDevice("Stage", lXStage, lYStage, lZStage);
+//      addDevice(0, lBasicThreeAxesStageInterface);
+//
+//      BasicThreeAxesStageInstruction lBasicThreeAxesStageScheduler = new BasicThreeAxesStageInstruction(lBasicThreeAxesStageInterface);
+//      addDevice(0, lBasicThreeAxesStageScheduler);
+//
+//      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000303, "Illumination0BAngleKCubeStage")); // XWing LS0 beta angle
+//      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000309, "Illumination1BAngleKCubeStage")); // XWing LS1 beta angle
+//      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000317, "Illumination2BAngleKCubeStage")); // XWing LS2 beta angle
+//      addDevice(0, lKCubeDeviceFactory.createKCubeDevice(26000318, "Illumination3BAngleKCubeStage")); // XWing LS3 beta angle
 
 
     }
@@ -128,45 +115,45 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, new ChangeLaserPowerInstruction(lLaserDevice488));
 
 
-      final CoboltLaserDevice lLaserDevice594 =
-                                              new CoboltLaserDevice("Mambo",
-                                                                    100,
-                                                                    1);
-      addDevice(1, lLaserDevice594);/**/
-
-      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 0.0));
-      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 1.0));
-      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 5.0));
-      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 10.0));
-      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 20.0));
-      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 50.0));
-      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 100.0));
-
-      addDevice(0, new LaserOnOffInstruction(lLaserDevice594, true));
-      addDevice(0, new LaserOnOffInstruction(lLaserDevice594, false));
-
-
-      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice594, true));
-      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice594, false));
-      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice594, true));
-      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice594, false));
-      addDevice(0, new ChangeLaserPowerInstruction(lLaserDevice594));
+//      final CoboltLaserDevice lLaserDevice594 =
+//                                              new CoboltLaserDevice("Mambo",
+//                                                                    100,
+//                                                                    1);
+//      addDevice(1, lLaserDevice594);/**/
+//
+//      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 0.0));
+//      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 1.0));
+//      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 5.0));
+//      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 10.0));
+//      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 20.0));
+//      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 50.0));
+//      addDevice(0, new LaserPowerInstruction(lLaserDevice594, 100.0));
+//
+//      addDevice(0, new LaserOnOffInstruction(lLaserDevice594, true));
+//      addDevice(0, new LaserOnOffInstruction(lLaserDevice594, false));
+//
+//
+//      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice594, true));
+//      addDevice(0, new SwitchLaserOnOffInstruction(lLaserDevice594, false));
+//      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice594, true));
+//      addDevice(0, new SwitchLaserPowerOnOffInstruction(lLaserDevice594, false));
+//      addDevice(0, new ChangeLaserPowerInstruction(lLaserDevice594));
     }
 
     // Setting up Stage:
     if (false)
     {
-      TSTStageDevice lTSTStageDevice = new TSTStageDevice();
-
-      StageHubDevice lStageHubDevice =
-                                     new StageHubDevice("XYZR Stage",
-                                                        StageType.XYZR);
-
-      lStageHubDevice.addDOF("X", lTSTStageDevice, 0);
-      lStageHubDevice.addDOF("Y", lTSTStageDevice, 1);
-      lStageHubDevice.addDOF("Z", lTSTStageDevice, 2);
-
-      addDevice(0, lStageHubDevice);
+//      TSTStageDevice lTSTStageDevice = new TSTStageDevice();
+//
+//      StageHubDevice lStageHubDevice =
+//                                     new StageHubDevice("XYZR Stage",
+//                                                        StageType.XYZR);
+//
+//      lStageHubDevice.addDOF("X", lTSTStageDevice, 0);
+//      lStageHubDevice.addDOF("Y", lTSTStageDevice, 1);
+//      lStageHubDevice.addDOF("Z", lTSTStageDevice, 2);
+//
+//      addDevice(0, lStageHubDevice);
     }
 
     // Setting up cameras:
@@ -189,20 +176,20 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
     }
 
     // Scaling Amplifier:
-    if (false)
-    {
-      final SIM900MainframeDevice lSIM900MainframeDevice =
-                                                         new SIM900MainframeDevice("COM1");
+//    if (false)
+//    {
+//      final SIM900MainframeDevice lSIM900MainframeDevice =
+//                                                         new SIM900MainframeDevice("COM1");
+//
+//      final SIM983ScalingAmplifierDevice lScalingAmp =
+//                                                     new SIM983ScalingAmplifierDevice(lSIM900MainframeDevice,
+//                                                                                      4);
+//      addDevice(0, lSIM900MainframeDevice);
+//      addDevice(0, lScalingAmp);
+//
+//    }
 
-      final SIM983ScalingAmplifierDevice lScalingAmp =
-                                                     new SIM983ScalingAmplifierDevice(lSIM900MainframeDevice,
-                                                                                      4);
-      addDevice(0, lSIM900MainframeDevice);
-      addDevice(0, lScalingAmp);
-
-    }
-
-    // Adding signal Generator:
+//    // Adding signal Generator:
     LightSheetSignalGeneratorDevice lLSSignalGenerator;
     {
       NIRIOSignalGenerator lNIRIOSignalGenerator =
@@ -267,9 +254,6 @@ public class XWingMicroscope extends SimulatedLightSheetMicroscope
       addDevice(0, lLightSheetOpticalSwitch);
     }
 
-    {
-      //addDevice(0, new TSTStageDevice());
-    }
   }
 
   @Override

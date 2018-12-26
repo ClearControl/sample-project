@@ -1,9 +1,9 @@
-package xwing.icon;
+package sample.icon;
 
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import xwing.XWingMicroscope;
+import sample.SampleMicroscope;
 
 /**
  * Author: Robert Haase (http://haesleinhuepf.net) at MPI CBG (http://mpi-cbg.de)
@@ -13,7 +13,7 @@ public class LaserIcon extends CustomGridPane
 {
   public LaserIcon(double pWidth, double pHeight) {
     ImageView lImageView =
-        new ImageView(new Image(XWingMicroscope.class.getResourceAsStream("icon/lasersymbol.png")));
+        new ImageView(new Image(SampleMicroscope.class.getResourceAsStream("icon/lasersymbol.png")));
 
     lImageView.setFitWidth(pWidth);
     lImageView.setFitHeight(pHeight);
