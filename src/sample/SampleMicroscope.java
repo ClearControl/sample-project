@@ -157,7 +157,6 @@ public class SampleMicroscope extends SimulatedLightSheetMicroscope
     }
 
     // Setting up cameras:
-    if (true)
     {
       for (int c = 0; c < pNumberOfDetectionArms; c++)
       {
